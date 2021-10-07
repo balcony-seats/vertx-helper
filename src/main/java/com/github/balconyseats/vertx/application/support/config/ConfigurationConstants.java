@@ -1,4 +1,4 @@
-package com.github.rdjurin.vertx.application.support.config;
+package com.github.balconyseats.vertx.application.support.config;
 
 public final class ConfigurationConstants {
 

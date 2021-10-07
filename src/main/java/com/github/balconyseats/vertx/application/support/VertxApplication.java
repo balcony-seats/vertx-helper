@@ -1,4 +1,4 @@
-package com.github.rdjurin.vertx.application.support;
+package com.github.balconyseats.vertx.application.support;
 
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
