@@ -1,4 +1,4 @@
-package com.github.rdjurin.vertx.application.support.config;
+package com.github.balconyseats.vertx.application.support.config;
 
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.file.FileSystemException;
