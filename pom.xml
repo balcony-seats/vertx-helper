@@ -61,6 +61,7 @@
 
         <commons-lang3.version>3.9</commons-lang3.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
+        <micrometer.version>1.8.1</micrometer.version>
     </properties>
 
     <dependencyManagement>
@@ -94,6 +95,12 @@
 
         <dependency>
             <groupId>io.vertx</groupId>
+            <artifactId>vertx-web-client</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.vertx</groupId>
             <artifactId>vertx-health-check</artifactId>
             <optional>true</optional>
         </dependency>
@@ -122,6 +129,19 @@
         </dependency>
 
         <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-opentracing</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.reactiverse</groupId>
+            <artifactId>reactiverse-contextual-logging</artifactId>
+            <version>1.1.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
@@ -134,9 +154,16 @@
         </dependency>
 
         <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <version>${micrometer.version}</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.9</version>
+            <version>1.2.10</version>
             <optional>true</optional>
         </dependency>
 
@@ -144,7 +171,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.6.2</version>
+            <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -156,7 +183,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.16.1</version>
+            <version>3.21.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

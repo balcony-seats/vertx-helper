@@ -1,4 +1,4 @@
-package com.github.balconyseats.vertx.application.support.config;
+package com.github.balconyseats.vertx.helper.config;
 
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.file.FileSystemException;
@@ -26,7 +26,7 @@ class ConfigurationLoaderTest {
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
-                            Assertions.assertThat(c.encode()).isEqualTo("{\"a\":10,\"b\":{\"b\":2},\"y\":{\"a\":20},\"j\":{\"a\":1,\"b\":\"b\"}}");
+                            Assertions.assertThat(c.encode()).isEqualTo("{\"a\":10,\"b\":{\"b\":2},\"http\":{\"server\":{\"port\":8080},\"health\":{\"enabled\":true,\"path\":\"/health\"}},\"metrics\":{\"micrometer\":{\"enabled\":true,\"prometheus\":{\"path\":\"/metrics\",\"enabled\":true}}},\"tracing\":{\"zipkin\":{\"enabled\":true,\"serviceName\":\"foo\",\"endpoint\":\"http://localhost:8082/zipkin\"}},\"y\":{\"a\":20},\"j\":{\"a\":1,\"b\":\"b\"}}");
                             testContext.completeNow();
                         })
                 ));
@@ -220,7 +220,7 @@ class ConfigurationLoaderTest {
                 .load()
                 .onComplete(testContext.failing(t -> testContext.verify(() -> {
                             Assertions.assertThat(t).isInstanceOf(FileSystemException.class)
-                                    .hasMessage("java.nio.file.NoSuchFileException: conf/sysprops.json");
+                                    .hasMessage("Unable to read file at path 'conf/sysprops.json'");
                             testContext.completeNow();
                         })
                 ));

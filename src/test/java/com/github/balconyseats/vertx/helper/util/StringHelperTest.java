@@ -1,4 +1,4 @@
-package com.github.balconyseats.vertx.application.support.util;
+package com.github.balconyseats.vertx.helper.util;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

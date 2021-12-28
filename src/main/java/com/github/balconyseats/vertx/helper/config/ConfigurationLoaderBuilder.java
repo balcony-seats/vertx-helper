@@ -1,6 +1,6 @@
-package com.github.balconyseats.vertx.application.support.config;
+package com.github.balconyseats.vertx.helper.config;
 
-import com.github.balconyseats.vertx.application.support.util.StringHelper;
+import com.github.balconyseats.vertx.helper.util.StringHelper;
 import io.vertx.config.ConfigRetrieverOptions;
 import io.vertx.config.ConfigStoreOptions;
 import io.vertx.core.json.JsonObject;

@@ -1,4 +1,4 @@
-package com.github.balconyseats.vertx.application.support.config;
+package com.github.balconyseats.vertx.helper.config;
 
 import io.vertx.config.ConfigRetriever;
 import io.vertx.config.ConfigRetrieverOptions;
@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Vertx application configuration loader from {@see ConfigRetrieverOptions}
+ * Vertx application configuration loader from {@link ConfigRetrieverOptions}
  */
 public class ConfigurationLoader {
 
@@ -23,7 +23,7 @@ public class ConfigurationLoader {
     }
 
     /**
-     * Instance of {@see ConfigurationLoaderBuilder}
+     * Instance of {@link ConfigurationLoaderBuilder}
      * @return new instance of {see {@link ConfigurationLoaderBuilder}}
      */
     public static ConfigurationLoaderBuilder builder() {
@@ -33,7 +33,7 @@ public class ConfigurationLoader {
     /**
      * Load configuration
      *
-     * @return {@see Future} with configuration result or failure
+     * @return {@link Future} with configuration result or failure
      */
     public Future<JsonObject> load() {
         Vertx vertx = Vertx.vertx();

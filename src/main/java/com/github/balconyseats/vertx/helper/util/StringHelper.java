@@ -1,4 +1,4 @@
-package com.github.balconyseats.vertx.application.support.util;
+package com.github.balconyseats.vertx.helper.util;
 
 import org.apache.commons.lang3.StringUtils;
 
