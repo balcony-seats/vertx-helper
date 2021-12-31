@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Common Vert.X application creator.
  *
- * <br/>
+ * <p></p>
  * Initialization flow:
  * <pre>
  *     load configuration
@@ -140,7 +140,7 @@ public class VertxApplication {
      * Configures and creates new {@link Vertx} instance.
      *
      * @param configuration configuration object
-     * @return {@see Vertx} instance
+     * @return {@link Vertx} instance
      */
     protected Vertx createVertx(JsonObject configuration) {
         VertxOptions vertxOptions = new VertxOptions();
