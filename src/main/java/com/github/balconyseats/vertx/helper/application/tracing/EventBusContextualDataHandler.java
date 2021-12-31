@@ -8,7 +8,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
 
-public class EventBusContextualDataProcessor implements InitializationHandler {
+public class EventBusContextualDataHandler implements InitializationHandler {
 
     @Override
     public Future<Void> handle(Vertx vertx, InitializationContext initializationContext, JsonObject config) {

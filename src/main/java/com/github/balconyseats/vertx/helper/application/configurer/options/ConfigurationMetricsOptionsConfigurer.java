@@ -6,7 +6,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Configure {@link io.vertx.core.metrics.MetricsOptions} from configuration
+ * Configure {@link io.vertx.core.metrics.MetricsOptions} using configuration data and add it to vertxOptions
  */
 public class ConfigurationMetricsOptionsConfigurer implements VertxOptionsConfigurer {
 

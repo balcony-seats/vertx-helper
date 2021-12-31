@@ -1,7 +1,11 @@
 package com.github.balconyseats.vertx.helper.http;
 
 import com.github.balconyseats.vertx.helper.util.ConfigUtil;
-import io.vertx.core.*;
+import io.vertx.core.AbstractVerticle;
+import io.vertx.core.CompositeFuture;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -15,13 +19,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Creates http server verticle from configuration:
- *
+ * Creates http server verticle using configuration data:
  * <pre>
  *     http:
  *       server:
  *          port: 8080
- *
  * </pre>
  */
 public class HttpServerVerticle extends AbstractVerticle {
@@ -63,16 +65,16 @@ public class HttpServerVerticle extends AbstractVerticle {
                     .requestHandler(router)
                     .listen(ConfigUtil.getInteger(CONFIG_HTTP_SERVER_PORT, config, DEFAULT_PORT))
                     .onSuccess(server -> {
-                        LOGGER.info("Http server started on port: {}", server.actualPort());
+                        LOGGER.info("Http server started on port {}", server.actualPort());
                         startPromise.complete();
                     })
                     .onFailure(t -> {
-                        LOGGER.error("Error starting http server.", t);
+                        LOGGER.error("Error starting http server", t);
                         startPromise.fail(t);
                     })
             )
             .onFailure(t -> {
-                LOGGER.error("Error starting http server.", t);
+                LOGGER.error("Error starting http server", t);
                 startPromise.fail(t);
             });
 
@@ -88,7 +90,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             CompositeFuture.join(Collections.unmodifiableList(routers))
                 .onComplete(future -> {
                     if (future.failed()) {
-                        LOGGER.error("Http server initialization failed. Error when configure routes", future.cause());
+                        LOGGER.error("Http server initialization failed while configuring routes", future.cause());
                         promise.fail(future.cause());
                     } else {
                         promise.complete(future.result().list());

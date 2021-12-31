@@ -10,7 +10,7 @@ import com.github.balconyseats.vertx.helper.application.configurer.VertxOptionsC
 import com.github.balconyseats.vertx.helper.http.HttpServerVerticle;
 import com.github.balconyseats.vertx.helper.http.handlers.ContextualLoggingRouterHandler;
 import com.github.balconyseats.vertx.helper.http.handlers.MetricsHandler;
-import com.github.balconyseats.vertx.helper.application.tracing.EventBusContextualDataProcessor;
+import com.github.balconyseats.vertx.helper.application.tracing.EventBusContextualDataHandler;
 import com.github.balconyseats.vertx.helper.application.tracing.TracingConfigHelper;
 import com.github.balconyseats.vertx.helper.config.ConfigurationLoader;
 import io.reactiverse.contextual.logging.ContextualData;
@@ -68,7 +68,7 @@ class VertxApplicationTest {
                 new ConfigurationTracingOptionsConfigurer()
                 )
             )
-            .preHandler(InitializationHandler.composite(new EventBusContextualDataProcessor()))
+            .preHandler(InitializationHandler.composite(new EventBusContextualDataHandler()))
             .postHandler(InitializationHandler.composite())
             .initializationContextConfigurer(InitializationContextConfigurer.composite())
             .verticleConfigurers(httpServerVerticleConfigurer)

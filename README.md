@@ -1,135 +1,136 @@
-# Vert.X Application support
+# Vert.X Helper Library
 
 ## About
 
-Library to help create and configure Vert.X application with common options, for example Metrics, Tracing, etc...
+A library to help create and configure Vert.X application with common options, like Metrics, Tracing, etc.
 
-## Configuration loading
+## Configuration Loading
 
-Configuration is loaded from classpath files, system files provided by environment variable or java system property, 
-from default vertx stores (https://vertx.io/docs/vertx-config/java) and code defined stores.
+Configuration is loaded from:
+  * classpath files
+  * system files provided by environment variable or java system property
+  * default vertx stores (https://vertx.io/docs/vertx-config/java)
+  * code defined stores.
 
-Configuration data are loaded and overloaded in the following order (see: https://vertx.io/docs/vertx-config/java/#_overloading_rules):
+Configuration data are loaded and overloaded from the following sources in the specified order
+(see: https://vertx.io/docs/vertx-config/java/#_overloading_rules):
 
- * classpath files: `application.properties`, `application.yml` or `application.json`
- * default vertx stores (this is disabled by default)
- * from system property variable: `vertx.configuration`
- * from env property variable: `VERTX_CONFIGURATION`
- * from code defined stores
+ * `application.properties`, `application.yml` or `application.json` classpath files
+ * default vertx stores (disabled by default)
+ * `vertx.configuration` system property
+ * `VERTX_CONFIGURATION` environment variable
+ * code defined stores.
 
-Load configuration example:
+Loading configuration example:
 
 ```java
 ConfigurationLoader.builder()
-    .enableFeature(ConfigurationLoaderBuilder.FeatureType.<some feature type>) //enable feature
-    .addStore(customConfigStoreOptions) //custom config store options
-    .addStore(filePath) // some filepath
+    .enableFeature(ConfigurationLoaderBuilder.FeatureType.<some feature type>) // enable feature
+    .addStore(customConfigStoreOptions) // custom config store options
+    .addStore(filePath) // some file path
     .build() // create loader
     .load() // load config
     .onSuccess(conf -> {
-        //do something with config
+        // do something with config
     })
     .onFailure(cause -> {
-        //load failed    
+        // load failed    
     })
 ```
 
-`ConfigurationLoader` is created with `ConfigurationLoaderBuilder` which is configurable with features and custom stores.
+`ConfigurationLoader` can be created using `ConfigurationLoaderBuilder`, a configurable with features and custom stores.
 
-### Configuration loader builder features
+### ConfigurationLoaderBuilder features
 
-| Name               | Default   | Description                                                                                                |
-|--------------------|:---------:|------------------------------------------------------------------------------------------------------------|
-|CLASSPATH_CONFIG    | enabled   | Use config files from classpath if exist:  `application.properties`, `application.yml`, `application.json` |
-|DEFAULT_VERTX_STORES| disabled  | Use default vertx stores https://vertx.io/docs/vertx-config/java/#_using_the_retrieve_configuration        |
+| Name               | Default   | Description                                                                                                       |
+|--------------------|:---------:|-------------------------------------------------------------------------------------------------------------------|
+|CLASSPATH_CONFIG    | enabled   | Use config files from classpath, if file exists:  `application.properties`,`application.yml`, `application.json`. |
+|DEFAULT_VERTX_STORES| disabled  | Use default vertx stores (https://vertx.io/docs/vertx-config/java/#_using_the_retrieve_configuration).            |
 
 
-### Configuration files paths
+### Configuration file paths
 
-System property and environment variable can contain multiple configuration files delimited with `:`.
+`vertx.configuration` system property and `VERTX_CONFIGURATION` environment variable can contain multiple configuration
+files delimited with `:`.
 
-For example: 
+E.g.: 
 
 `/config/config-1.yml:/config/config-2.yml:'file://some/path/config.yml':file\://some/path/config.json`
 
 If path contains `:` then it needs to be enclosed in single or double quotes or escaped with `\`.
 
 
-## Vertx application 
+## VertxApplication 
 
-Vertx application is helper for configure and create `Vertx` instance and deploy verticles.
+VertxApplication is a helper for configuring and creating `Vertx` instance and deploying verticles.
 
 Initialization flow:
 
 ```
-    --------------------------------
-    |      LOAD CONFIGURATION      |
-    --------------------------------
+    ----------------------------------
+    |      LOAD CONFIGURATION        |
+    ----------------------------------
                    | 
                    V
-    --------------------------------
-    |    CREATE VertX INSTANCE     |
-    --------------------------------
+    ----------------------------------
+    |    CREATE VertX INSTANCE       |
+    ----------------------------------
                    | 
                    V
-    --------------------------------
-    | CREATE InitializationContext |
-    --------------------------------
+    ----------------------------------
+    | CREATE InitializationContext   |
+    ----------------------------------
                    | 
                    V
-    --------------------------------
-    |          PRE HANDLE          |
-    --------------------------------
+    ----------------------------------
+    |VERTICLE PRE-DEPLOYMENT HANDLER |
+    ----------------------------------
                    | 
                    V
-    --------------------------------
-    |       DEPLOY VERTICLES       |
-    --------------------------------
+    ----------------------------------
+    |       DEPLOY VERTICLES         |
+    ----------------------------------
                    | 
                    V
-    --------------------------------
-    |         POST HANDLER         |
-    --------------------------------
+    ----------------------------------
+    |VERTICLE POST-DEPLOYMENT HANDLER|
+    ----------------------------------
 ```
 
-Example how to create application:
+Creating application example:
 
 ```java
 
 VertxApplication vertxApplication = VertxApplication.builder()
     .configurationLoader(ConfigurationLoader.builder().build()) // add configuration loader
-    .vertxOptionsConfigurer(vertxOptionsConfigurer) // add vertxOptionsConfigurer
+    .vertxOptionsConfigurer(vertxOptionsConfigurer) // add vertx options configurer
     .initializationContextConfigurer(initializationContextConfigurer) // add application context configurer
-    .preHandler(preHandler) // add pre handler
+    .preHandler(preHandler) // add pre-deployment handler
     .verticleConfigurers(httpServerVerticleConfigurer) // add verticle configurers
-    .postHandler(postHandler) // add post handler
+    .postHandler(postHandler) // add post-deployment handler
     .build();
-
 ```
 
-### Load configuration
+### Loading configuration
 
-Load configuration with provided `ConfigurationLoader`.
+Configuration loading is done with provided `ConfigurationLoader`.
 
-### Create VertX instance
+### Creating VertX instance
 
-Configures VertX instance with `VertxOptionsConfigurer` which accept two argument `VertxOptions` and 
+VertX instance is configured with `VertxOptionsConfigurer` which accepts two arguments: `VertxOptions` and 
 configuration as `JsonObject`. 
-For details how to configure `VertxOptions` see: https://vertx.io/docs/vertx-core/java/
-V
+For `VertxOptions` details see: https://vertx.io/docs/vertx-core/java/.
 
 ```java
-
 VertxApplication vertxApplication = VertxApplication.builder()
     ...
     .vertxOptionsConfigurer((VertxOptions vo, JsonObject config) -> {
         //
     }) 
     ...
-
 ```
 
-To chain multiple configurers use:
+Multiple options configurers can be chained:
 
 ```java
 VertxApplication vertxApplication = VertxApplication.builder()
@@ -141,44 +142,38 @@ VertxApplication vertxApplication = VertxApplication.builder()
         )
     )
     ...
-
 ```
 
-### Initialization context
+### Initialization Context
 
-Initilization context configurer step is for creating singletons or other objects that can be used 
-in verticle deployment stage or processor stages. For example application context can have reference to
-database pool instance.  
-To configure `InitializationContext` implement `InitializationContextConfigurer` interface as java lambda function or standard 
-java class.
+Initilization context configurer step is used for creating singletons or other objects that can be used 
+in verticle deployment stage or verticle pre and post deployment stages.
+E.g. initialization context can contain reference to database pool instance.  
+
+To configure `InitializationContext` implement `InitializationContextConfigurer` interface, as java lambda function or
+as standard java class.
 
 ```java
 VertxApplication vertxApplication = VertxApplication.builder()
     ...
     .initializationContextConfigurer(
         InitializationContextConfigurer.composite(
-            (initializationContext, vertx, config) -> initializationContext.put("foo", new Foo()), //adds foo to context
-            (initializationContext, vertx, config) -> initializationContext.put("bar", new Bar()) //adds bar to context
+            (initializationContext, vertx, config) -> initializationContext.put("foo", new Foo()), // add foo to context
+            (initializationContext, vertx, config) -> initializationContext.put("bar", new Bar()) // add bar to context
         )
     )
     ...
 ```
 
-### Pre verticles deployment handler
+### Verticle Pre-deployment Handler
 
-This step adds possibility to do something before verticles deployment for example database migration
-or something similar.
-
-
-### Verticle deployments
-
-Configures and instantiate `Verticle` instances and deploy it to vertx instance.
-
-### Post verticles deployment handler
-
-This step adds possibility to do something after verticles deployment for example database migration
-or something similar.
+This step adds possibility to do something before verticles are deployed, e.g. database migration.
 
 
-## HttpServerVerticle
+### Verticle Deployment
 
+Configure and instantiate `Verticle` instances and deploy them to VertX instance.
+
+### Verticle Post-deployment Handler
+
+This step adds possibility to do something after verticles are deployed.

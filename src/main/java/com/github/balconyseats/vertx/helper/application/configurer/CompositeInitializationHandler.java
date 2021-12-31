@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 public class CompositeInitializationHandler implements InitializationHandler {
 
-    private final List<InitializationHandler> processors;
+    private final List<InitializationHandler> handlers;
 
-    public CompositeInitializationHandler(List<InitializationHandler> processors) {
-        this.processors = Objects.requireNonNullElseGet(processors, ArrayList::new);
+    public CompositeInitializationHandler(List<InitializationHandler> handlers) {
+        this.handlers = Objects.requireNonNullElseGet(handlers, ArrayList::new);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class CompositeInitializationHandler implements InitializationHandler {
 
         Promise<Void> promise = Promise.promise();
 
-        List<Future<Void>> futures = processors.stream()
+        List<Future<Void>> futures = handlers.stream()
             .map(p -> p.handle(vertx, initializationContext, config))
             .collect(Collectors.toList());
 

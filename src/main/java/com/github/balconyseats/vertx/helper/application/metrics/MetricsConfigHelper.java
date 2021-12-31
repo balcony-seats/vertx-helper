@@ -10,7 +10,7 @@ import io.vertx.micrometer.PrometheusScrapingHandler;
 import io.vertx.micrometer.VertxPrometheusOptions;
 
 /**
- * Create metrics components from config:
+ * Helper class for creating metrics components using configuration data:
  * <pre>
  *     metrics:
  *       micrometer:
@@ -19,7 +19,6 @@ import io.vertx.micrometer.VertxPrometheusOptions;
  *            path: '/metrics'
  *            enabled: true
  * </pre>
- *
  */
 public class MetricsConfigHelper {
 
@@ -30,7 +29,7 @@ public class MetricsConfigHelper {
     public static final String DEFAULT_METRICS_PATH = "/metrics";
 
     /**
-     * Add metrics handler to http server router
+     * Adds metrics handler to http server router.
      * @param vertx vertx instance
      * @param router router instance
      * @param config configuration
@@ -43,7 +42,7 @@ public class MetricsConfigHelper {
     }
 
     /**
-     * Create metric options for Vertx instance
+     * Creates metric options for Vertx instance.
      * @param config configuration
      * @return created {@link MetricsOptions} instance
      */

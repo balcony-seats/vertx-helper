@@ -6,13 +6,13 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 
 /**
- * Custom configurer for {@link VertxOptions}
+ * Custom configurer for {@link VertxOptions}.
  */
 @FunctionalInterface
 public interface VertxOptionsConfigurer {
 
     /**
-     * Configures vertxOptions
+     * Configures vertx options.
      *
      * @param vertxOptions options to configure
      * @param config configuration object

@@ -16,8 +16,9 @@ import io.vertx.tracing.zipkin.ZipkinTracingOptions;
 import java.util.Optional;
 
 /**
- * Helpers for tracing.
- * Configuration for tracing:
+ * Helper for tracing configuration.
+ *
+ * It uses the following configuration data:
  *
  * <pre>
  *     tracing:
@@ -27,7 +28,6 @@ import java.util.Optional;
  *         endpoint: 'http://localhost:8082
  *       opentracing:
  *         enabled: true
- *
  * </pre>
  */
 public class TracingConfigHelper {
@@ -42,7 +42,7 @@ public class TracingConfigHelper {
     public static final String CONFIG_TRACING_OPENTRACING_ENABLED = "/tracing/opentracing/enabled";
 
     /**
-     * Create tracing options for {@link Vertx} instance
+     * Creates tracing options for {@link Vertx} instance.
      * @param config configuration
      * @return {@link TracingOptions} instance
      */
@@ -62,7 +62,7 @@ public class TracingConfigHelper {
     }
 
     /**
-     * Propagation of contextual data over the EventBus using interceptors.
+     * Propagates contextual data over the EventBus using interceptors.
      * @param vertx {@link Vertx} instance
      * @param config configuration
      */
@@ -93,7 +93,7 @@ public class TracingConfigHelper {
     }
 
     /**
-     * Set contextual data for logging based on configuration
+     * Sets contextual data for logging based on configuration.
      * @param config configuration object
      */
     public static void setContextualData(JsonObject config) {

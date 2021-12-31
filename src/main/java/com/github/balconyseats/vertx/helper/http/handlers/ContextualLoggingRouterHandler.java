@@ -7,7 +7,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
 /**
- * Add contextual logging data spanId and traceId
+ * Route handler that adds 'spanId' and 'traceId' contextual logging data.
  */
 public class ContextualLoggingRouterHandler implements RouterHandler {
 

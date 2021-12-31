@@ -5,7 +5,7 @@ import io.vertx.core.Verticle;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Instantiate and configures new {see {@link Verticle}}
+ * Configurer that instantiates and configures new {see {@link Verticle}}.
  */
 @FunctionalInterface
 public interface VerticleConfigurer {

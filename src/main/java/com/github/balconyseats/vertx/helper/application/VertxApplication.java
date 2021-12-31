@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Common Vert.X application creator
+ * Common Vert.X application creator.
  *
  * <br/>
  * Initialization flow:
@@ -32,13 +32,13 @@ import java.util.stream.Collectors;
  *  create initialization context
  *            |
  *            V
- *    call pre handler
+ *  verticle pre-deployment handler
  *            |
  *            V
- *     deploy Verticles
+ *     deploy verticles
  *            |
  *            V
- *   call post handler
+ *  verticle post-deployment handler
  * </pre>
  *
  */
@@ -59,19 +59,19 @@ public class VertxApplication {
                             List<VerticleConfigurer> verticleConfigurers,
                             VertxOptionsConfigurer vertxOptionsConfigurer,
                             InitializationContextConfigurer initializationContextConfigurer,
-                            InitializationHandler beforeProcessor,
-                            InitializationHandler afterProcessor
+                            InitializationHandler beforeHandler,
+                            InitializationHandler afterHandler
     ) {
         this.configurationLoader = configurationLoader;
         this.verticleConfigurers = verticleConfigurers;
         this.vertxOptionsConfigurer = vertxOptionsConfigurer;
         this.initializationContextConfigurer = initializationContextConfigurer;
-        this.preHandler = beforeProcessor;
-        this.postHandler = afterProcessor;
+        this.preHandler = beforeHandler;
+        this.postHandler = afterHandler;
     }
 
     /**
-     * Configures and creates Vertx instance and configures and deploys Verticles
+     * Configures and creates Vertx instance, and configures and deploy verticles.
      *
      * @return future with {@link VertxContext}
      */
@@ -85,7 +85,7 @@ public class VertxApplication {
                         .onFailure(promise::fail)
                 )
                 .onFailure(error -> {
-                    LOGGER.error("Error when loading configuration.", error);
+                    LOGGER.error("Error while loading configuration", error);
                     promise.fail(error);
                 });
         } else {
@@ -98,7 +98,7 @@ public class VertxApplication {
     }
 
     /**
-     * Closes Vertx instance
+     * Closes Vertx instance.
      * @return {@link Future} with completed result
      */
     public Future<Void> close() {
@@ -111,25 +111,25 @@ public class VertxApplication {
     }
 
     /**
-     * Configure vertx and Verticles and deploy it
+     * Configures VertX, and configures and deploys verticles.
      * @param config configuration
-     * @return {@link Future} with Vertx instance
+     * @return {@link Future} with VertX instance
      */
     private Future<Pair<Vertx, InitializationContext>> configureAndDeploy(JsonObject config) {
         Promise<Pair<Vertx, InitializationContext>> promise = Promise.promise();
 
-        this.vertx = this.createVertx(config); //create vertx
+        this.vertx = this.createVertx(config); // create vertx
 
-        createInitializationContext(this.vertx, config) //createContext
-            .flatMap(ictx -> preHandler.handle(this.vertx, ictx, config).map(__ -> ictx)) //beforedeploy
+        createInitializationContext(this.vertx, config) // create context
+            .flatMap(ictx -> preHandler.handle(this.vertx, ictx, config).map(__ -> ictx)) // before deployment
             .flatMap(ictx ->
                 deployVerticles(this.vertx, ictx, config)
                     .map(di -> {
-                        LOGGER.info("Deployed Verticles: {}", di);
+                        LOGGER.info("Deployed verticles: {}", di);
                         return ictx;
                     })
             )
-            .flatMap(ictx -> postHandler.handle(this.vertx, ictx, config).map(__ -> ictx)) //afterdeploy
+            .flatMap(ictx -> postHandler.handle(this.vertx, ictx, config).map(__ -> ictx)) // after deployment
             .onSuccess(ictx -> promise.complete(Pair.of(this.vertx, ictx)))
             .onFailure(promise::fail);
 
@@ -137,7 +137,7 @@ public class VertxApplication {
     }
 
     /**
-     * Configures and create new {@link Vertx} instance
+     * Configures and creates new {@link Vertx} instance.
      *
      * @param configuration configuration object
      * @return {@see Vertx} instance
@@ -153,7 +153,7 @@ public class VertxApplication {
     }
 
     /**
-     * Creates {@link InitializationContext} Future
+     * Creates {@link InitializationContext} future.
      *
      * @param vertx      vertx instance
      * @param jsonObject configuration
@@ -169,13 +169,17 @@ public class VertxApplication {
     }
 
     /**
-     * Create and deploy Verticles and return {@link Future}
-     * of deployment results as {@link Triple} where first is Verticle class name, second is deploymentId and third is success of deployment flag
+     * Creates and deploys verticles.
+     *
+     * Result is a {@link Future} of deployment results as {@link Triple}:
+     * first element is verticle class name,
+     * second element is deployment id,
+     * and third element is deployment result flag.
      *
      * @param vertx              Vertx instance
-     * @param initializationContext initializtion context objects
+     * @param initializationContext initializtion context object
      * @param config             configuration
-     * @return {@link Future} with deployment results
+     * @return {@link Future} with deployment result
      */
     protected Future<List<Triple<String, String, Boolean>>> deployVerticles(Vertx vertx, InitializationContext initializationContext, JsonObject config) {
         Promise<List<Triple<String, String, Boolean>>> promise = Promise.promise();
@@ -196,7 +200,7 @@ public class VertxApplication {
                             LOGGER.error("Starting verticle '{}' failed", name, future.cause());
                             return Triple.<String, String, Boolean>of(name, null, false);
                         } else {
-                            LOGGER.debug("Verticle: '{}' ('{}') started", name, future.result());
+                            LOGGER.debug("Verticle '{}' ('{}') started", name, future.result());
                             return Triple.of(name, future.result(), true);
                         }
                     })
@@ -205,7 +209,7 @@ public class VertxApplication {
                 if (result.stream().allMatch(Triple::getRight)) {
                     promise.complete(result);
                 } else {
-                    promise.fail("Some Verticles were not started successfully");
+                    promise.fail("Some verticles were not started successfully");
                 }
 
             });

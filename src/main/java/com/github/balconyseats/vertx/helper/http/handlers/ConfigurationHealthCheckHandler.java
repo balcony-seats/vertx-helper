@@ -7,7 +7,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 
 /**
- * Configures health check from configuration:
+ * Route handler that configures health check using configuration data:
  *
  * <pre>
  *     http:
@@ -16,7 +16,7 @@ import io.vertx.ext.web.Router;
  *         path: '/health'
  * </pre>
  *
- * I path is not defined then '/health' path is used
+ * If 'path' is not defined then '/health' is used.
  */
 public class ConfigurationHealthCheckHandler implements RouterHandler {
 

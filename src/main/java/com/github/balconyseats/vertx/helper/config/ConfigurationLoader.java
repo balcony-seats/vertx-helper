@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Vertx application configuration loader from {@link ConfigRetrieverOptions}
+ * Vertx application configuration loader using {@link ConfigRetrieverOptions}.
  */
 public class ConfigurationLoader {
 
@@ -23,7 +23,7 @@ public class ConfigurationLoader {
     }
 
     /**
-     * Instance of {@link ConfigurationLoaderBuilder}
+     * Create instance of {@link ConfigurationLoaderBuilder}.
      * @return new instance of {see {@link ConfigurationLoaderBuilder}}
      */
     public static ConfigurationLoaderBuilder builder() {
@@ -31,9 +31,9 @@ public class ConfigurationLoader {
     }
 
     /**
-     * Load configuration
+     * Loads configuration.
      *
-     * @return {@link Future} with configuration result or failure
+     * @return {@link Future} with configuration result
      */
     public Future<JsonObject> load() {
         Vertx vertx = Vertx.vertx();

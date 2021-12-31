@@ -12,6 +12,14 @@ public final class StringHelper {
 
     private static final char ESCAPE = '\\';
 
+    /**
+     * Splits the string around delimiter taking into account values enclosed by defined characters.
+     *
+     * @param str string to be split
+     * @param delimiter split delimiter
+     * @param enclosedBy value enclosing characters
+     * @return list of split values
+     */
     public static List<String> splitEnclosed(String str, char delimiter, String... enclosedBy) {
 
         Set<String> enclosedChars = Set.of(enclosedBy);

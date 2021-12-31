@@ -8,13 +8,13 @@ import io.vertx.core.json.JsonObject;
 import java.util.List;
 
 /**
- * Configure {@link InitializationContext}
+ * {@link InitializationContext} configurer.
  */
 @FunctionalInterface
 public interface InitializationContextConfigurer {
 
     /**
-     * Configure provided initialization context
+     * Configures provided initialization context.
      *
      * @param initializationContext {@link InitializationContext} to configure
      * @param vertx {@link Vertx} instance
@@ -24,8 +24,8 @@ public interface InitializationContextConfigurer {
     Future<InitializationContext> configure(InitializationContext initializationContext, Vertx vertx, JsonObject config);
 
     /**
-     * Instantiate new instance of {@link CompositeInitializationContextConfigurer}
-     * @param configurers array of configurers {@link InitializationContextConfigurer}
+     * Instantiates new instance of {@link CompositeInitializationContextConfigurer}.
+     * @param configurers array of {@link InitializationContextConfigurer}
      * @return {@link CompositeInitializationContextConfigurer}
      */
     static InitializationContextConfigurer composite(InitializationContextConfigurer... configurers) {
