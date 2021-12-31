@@ -1,3 +1,25 @@
+http:
+  server:
+    port: 8080
+  health:
+    enabled: true
+    path: '/health'
+
+metrics:
+  micrometer:
+    enabled: true
+    prometheus:
+      path: '/metrics'
+      enabled: true
+
+tracing:
+  zipkin:
+    enabled: true
+    serviceName: 'foo'
+    endpoint: 'http://localhost:8082/zipkin'
+
+
+
 b:
   b: 2
 y:
