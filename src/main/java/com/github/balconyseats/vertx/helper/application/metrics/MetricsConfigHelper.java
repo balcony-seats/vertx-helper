@@ -23,9 +23,11 @@ import io.vertx.micrometer.VertxPrometheusOptions;
  */
 public class MetricsConfigHelper {
 
-    public static final String METRICS_MICROMETER_ENABLED = "/metrics/micrometer/enabled";
-    public static final String METRICS_MICROMETER_PROMETHEUS_ENABLED = "/metrics/micrometer/prometheus/enabled";
-    public static final String METRICS_MICROMETER_PROMETHEUS_PATH = "/metrics/micrometer/prometheus/path";
+    public static final String CONFIG_METRICS_MICROMETER_ENABLED = "/metrics/micrometer/enabled";
+    public static final String CONFIG_METRICS_MICROMETER_PROMETHEUS_ENABLED = "/metrics/micrometer/prometheus/enabled";
+    public static final String CONFIG_METRICS_MICROMETER_PROMETHEUS_PATH = "/metrics/micrometer/prometheus/path";
+
+    public static final String DEFAULT_METRICS_PATH = "/metrics";
 
     /**
      * Add metrics handler to http server router
@@ -35,7 +37,7 @@ public class MetricsConfigHelper {
      */
     public static void addMetricsHandler(Vertx vertx, Router router, JsonObject config) {
         if (metricsEnabled(config) && prometheusEnabled(config)) {
-            String path = ConfigUtil.getString(METRICS_MICROMETER_PROMETHEUS_PATH, config, "/metrics");
+            String path = ConfigUtil.getString(CONFIG_METRICS_MICROMETER_PROMETHEUS_PATH, config, DEFAULT_METRICS_PATH);
             router.get(path).handler(PrometheusScrapingHandler.create());
         }
     }
@@ -46,12 +48,12 @@ public class MetricsConfigHelper {
      * @return created {@link MetricsOptions} instance
      */
     public static MetricsOptions createMetricOptions(JsonObject config) {
-        if (ConfigUtil.getBoolean("/metrics/micrometer/enabled", config)) {
+        if (metricsEnabled(config)) {
             final MicrometerMetricsOptions metricsOptions = new MicrometerMetricsOptions()
                 .setJvmMetricsEnabled(true)
                 .setEnabled(true);
 
-            if (ConfigUtil.getBoolean("/metrics/micrometer/prometheus/enabled", config)) {
+            if (prometheusEnabled(config)) {
                 metricsOptions.setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true));
             }
 
@@ -62,10 +64,10 @@ public class MetricsConfigHelper {
     }
 
     private static boolean metricsEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(METRICS_MICROMETER_ENABLED, config);
+        return ConfigUtil.getBoolean(CONFIG_METRICS_MICROMETER_ENABLED, config);
     }
 
     private static boolean prometheusEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(METRICS_MICROMETER_PROMETHEUS_ENABLED, config);
+        return ConfigUtil.getBoolean(CONFIG_METRICS_MICROMETER_PROMETHEUS_ENABLED, config);
     }
 }

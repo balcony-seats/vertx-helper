@@ -36,10 +36,10 @@ public class TracingConfigHelper {
     public static final String SPAN_ID_KEY = "spanId";
     public static final String[] TRACE_KEYS = new String[] {TRACE_ID_KEY, SPAN_ID_KEY};
 
-    public static final String TRACING_ZIPKIN_ENABLED = "/tracing/zipkin/enabled";
-    public static final String TRACING_ZIPKIN_ENDPOINT = "/tracing/zipkin/endpoint";
-    public static final String TRACING_ZIPKIN_SERVICE_NAME = "/tracing/zipkin/serviceName";
-    public static final String TRACING_OPENTRACING_ENABLED = "/tracing/opentracing/enabled";
+    public static final String CONFIG_TRACING_ZIPKIN_ENABLED = "/tracing/zipkin/enabled";
+    public static final String CONFIG_TRACING_ZIPKIN_ENDPOINT = "/tracing/zipkin/endpoint";
+    public static final String CONFIG_TRACING_ZIPKIN_SERVICE_NAME = "/tracing/zipkin/serviceName";
+    public static final String CONFIG_TRACING_OPENTRACING_ENABLED = "/tracing/opentracing/enabled";
 
     /**
      * Create tracing options for {@link Vertx} instance
@@ -49,11 +49,11 @@ public class TracingConfigHelper {
     public static TracingOptions createTracingOptions(JsonObject config) {
         if (isZipkinEnabled(config)) {
             final HttpSenderOptions httpSenderOptions = new HttpSenderOptions()
-                .setSenderEndpoint( ConfigUtil.getString(TRACING_ZIPKIN_ENDPOINT, config));
+                .setSenderEndpoint( ConfigUtil.getString(CONFIG_TRACING_ZIPKIN_ENDPOINT, config));
             httpSenderOptions.setTracingPolicy(TracingPolicy.ALWAYS);
 
             return new ZipkinTracingOptions()
-                .setServiceName(ConfigUtil.getString(TRACING_ZIPKIN_SERVICE_NAME, config))
+                .setServiceName(ConfigUtil.getString(CONFIG_TRACING_ZIPKIN_SERVICE_NAME, config))
                 .setSenderOptions(httpSenderOptions);
         } else if (isOpenTracindEnabled(config)) {
             return new OpenTracingOptions();
@@ -114,11 +114,11 @@ public class TracingConfigHelper {
     }
 
     private static Boolean isOpenTracindEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(TRACING_OPENTRACING_ENABLED, config);
+        return ConfigUtil.getBoolean(CONFIG_TRACING_OPENTRACING_ENABLED, config);
     }
 
     private static Boolean isZipkinEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(TRACING_ZIPKIN_ENABLED, config);
+        return ConfigUtil.getBoolean(CONFIG_TRACING_ZIPKIN_ENABLED, config);
     }
 
     private static void setTraceId(String traceId) {

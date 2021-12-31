@@ -1,10 +1,7 @@
-package com.github.balconyseats.vertx.helper.application.http;
+package com.github.balconyseats.vertx.helper.http;
 
 import com.github.balconyseats.vertx.helper.util.ConfigUtil;
-import io.vertx.core.AbstractVerticle;
-import io.vertx.core.CompositeFuture;
-import io.vertx.core.Future;
-import io.vertx.core.Promise;
+import io.vertx.core.*;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -19,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Creates http server verticle from configuration:
+ *
  * <pre>
  *     http:
  *       server:
@@ -29,7 +27,7 @@ import java.util.stream.Collectors;
 public class HttpServerVerticle extends AbstractVerticle {
 
     // Configurations
-    public static final String HTTP_SERVER_PORT = "/http/server/port";
+    public static final String CONFIG_HTTP_SERVER_PORT = "/http/server/port";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpServerVerticle.class);
     private static final Integer DEFAULT_PORT = 8080;
@@ -37,15 +35,18 @@ public class HttpServerVerticle extends AbstractVerticle {
     private final JsonObject config;
     private final List<RouterConfigurer> subrouterConfigurers;
     private final List<RouterHandler> routerHandlers;
+    private final List<Handler<Router>> simpleRouterHandlers;
     private final Configurer<HttpServerOptions> httpServerOptionsConfigurer;
 
     public HttpServerVerticle(JsonObject config,
                               List<RouterConfigurer> subrouterConfigurers,
                               List<RouterHandler> routerHandlers,
+                              List<Handler<Router>> simpleRouterHandlers,
                               Configurer<HttpServerOptions> httpServerOptionsConfigurer) {
         this.config = config;
         this.subrouterConfigurers = subrouterConfigurers;
         this.routerHandlers = routerHandlers;
+        this.simpleRouterHandlers = simpleRouterHandlers;
         this.httpServerOptionsConfigurer = Objects.requireNonNullElseGet(httpServerOptionsConfigurer, () -> c -> new HttpServerOptions());
     }
 
@@ -60,7 +61,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             .onSuccess(router ->
                 this.vertx.createHttpServer(this.httpServerOptionsConfigurer.configure(this.config))
                     .requestHandler(router)
-                    .listen(ConfigUtil.getInteger(HTTP_SERVER_PORT, config, DEFAULT_PORT))
+                    .listen(ConfigUtil.getInteger(CONFIG_HTTP_SERVER_PORT, config, DEFAULT_PORT))
                     .onSuccess(server -> {
                         LOGGER.info("Http server started on port: {}", server.actualPort());
                         startPromise.complete();
@@ -107,6 +108,11 @@ public class HttpServerVerticle extends AbstractVerticle {
         //add custom route customizers
         if (this.routerHandlers != null) {
             this.routerHandlers.forEach(rh -> rh.apply(this.vertx, router, config));
+        }
+
+        //add simple route handlers
+        if (this.simpleRouterHandlers != null) {
+            this.simpleRouterHandlers.forEach(h -> h.handle(router));
         }
 
         //mount created subrouters

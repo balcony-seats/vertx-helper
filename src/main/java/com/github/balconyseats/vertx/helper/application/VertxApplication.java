@@ -71,9 +71,9 @@ public class VertxApplication {
     }
 
     /**
-     * Configures and create Vertx instance and configure and deploy Verticles
+     * Configures and creates Vertx instance and configures and deploys Verticles
      *
-     * @return future with {@link Pair} which contains {@link Vertx} as left and loaded configuration as right
+     * @return future with {@link VertxContext}
      */
     public Future<VertxContext> create() {
         Promise<VertxContext> promise = Promise.promise();

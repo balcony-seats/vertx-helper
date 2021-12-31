@@ -179,3 +179,6 @@ Configures and instantiate `Verticle` instances and deploy it to vertx instance.
 This step adds possibility to do something after verticles deployment for example database migration
 or something similar.
 
+
+## HttpServerVerticle
+

@@ -1,4 +1,4 @@
-package com.github.balconyseats.vertx.helper.application.configurer.metrics;
+package com.github.balconyseats.vertx.helper.application.configurer.options;
 
 import com.github.balconyseats.vertx.helper.application.configurer.VertxOptionsConfigurer;
 import com.github.balconyseats.vertx.helper.application.metrics.MetricsConfigHelper;
@@ -6,7 +6,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 
 /**
- * Configure metrics from configuration
+ * Configure {@link io.vertx.core.metrics.MetricsOptions} from configuration
  */
 public class ConfigurationMetricsOptionsConfigurer implements VertxOptionsConfigurer {
 

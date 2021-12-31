@@ -1,6 +1,6 @@
-package com.github.balconyseats.vertx.helper.application.http.handlers;
+package com.github.balconyseats.vertx.helper.http.handlers;
 
-import com.github.balconyseats.vertx.helper.application.http.RouterHandler;
+import com.github.balconyseats.vertx.helper.http.RouterHandler;
 import com.github.balconyseats.vertx.helper.application.tracing.TracingConfigHelper;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;

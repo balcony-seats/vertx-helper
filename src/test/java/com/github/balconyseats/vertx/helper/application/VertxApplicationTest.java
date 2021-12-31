@@ -1,15 +1,15 @@
 package com.github.balconyseats.vertx.helper.application;
 
-import com.github.balconyseats.vertx.helper.application.configurer.metrics.ConfigurationMetricsOptionsConfigurer;
-import com.github.balconyseats.vertx.helper.application.configurer.metrics.ConfigurationTracingOptionsConfigurer;
-import com.github.balconyseats.vertx.helper.application.http.handlers.ConfigurationHealthCheckHandler;
+import com.github.balconyseats.vertx.helper.application.configurer.options.ConfigurationMetricsOptionsConfigurer;
+import com.github.balconyseats.vertx.helper.application.configurer.options.ConfigurationTracingOptionsConfigurer;
+import com.github.balconyseats.vertx.helper.http.handlers.ConfigurationHealthCheckHandler;
 import com.github.balconyseats.vertx.helper.application.configurer.InitializationContextConfigurer;
 import com.github.balconyseats.vertx.helper.application.configurer.InitializationHandler;
 import com.github.balconyseats.vertx.helper.application.configurer.VerticleConfigurer;
 import com.github.balconyseats.vertx.helper.application.configurer.VertxOptionsConfigurer;
-import com.github.balconyseats.vertx.helper.application.http.HttpServerVerticle;
-import com.github.balconyseats.vertx.helper.application.http.handlers.ContextualLoggingRouterHandler;
-import com.github.balconyseats.vertx.helper.application.http.handlers.MetricsHandler;
+import com.github.balconyseats.vertx.helper.http.HttpServerVerticle;
+import com.github.balconyseats.vertx.helper.http.handlers.ContextualLoggingRouterHandler;
+import com.github.balconyseats.vertx.helper.http.handlers.MetricsHandler;
 import com.github.balconyseats.vertx.helper.application.tracing.EventBusContextualDataProcessor;
 import com.github.balconyseats.vertx.helper.application.tracing.TracingConfigHelper;
 import com.github.balconyseats.vertx.helper.config.ConfigurationLoader;

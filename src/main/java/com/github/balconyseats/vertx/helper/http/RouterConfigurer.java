@@ -1,4 +1,4 @@
-package com.github.balconyseats.vertx.helper.application.http;
+package com.github.balconyseats.vertx.helper.http;
 
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;

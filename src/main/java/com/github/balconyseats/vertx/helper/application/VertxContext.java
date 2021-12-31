@@ -14,14 +14,26 @@ public class VertxContext {
         this.configuration = configuration;
     }
 
+    /**
+     *
+     * @return initialized Vertx instance
+     */
     public Vertx getVertx() {
         return vertx;
     }
 
+    /**
+     *
+     * @return initialization context
+     */
     public InitializationContext getInitializationContext() {
         return initializationContext;
     }
 
+    /**
+     *
+     * @return loaded configuration
+     */
     public JsonObject getConfiguration() {
         return configuration;
     }

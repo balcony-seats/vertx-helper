@@ -8,6 +8,9 @@ import com.github.balconyseats.vertx.helper.application.configurer.VertxOptionsC
 
 import java.util.List;
 
+/**
+ * Builder for {@link VertxApplication}
+ */
 public class VertxApplicationBuilder {
     private ConfigurationLoader configurationLoader;
     private List<VerticleConfigurer> verticleConfigurers;

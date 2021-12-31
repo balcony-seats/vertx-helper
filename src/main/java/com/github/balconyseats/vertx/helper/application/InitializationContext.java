@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Intialization context is used for singleton objects in context which is then used by {@link io.vertx.core.Verticle} instances.
- * For example application context can have database pool instance
+ * Intialization context is used for singleton objects which is then used by {@link io.vertx.core.Verticle} instances or some configurers.
+ * <br/>
+ * For example application context can have database pool instance.
  */
 public class InitializationContext {
 

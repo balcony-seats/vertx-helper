@@ -1,10 +1,13 @@
-package com.github.balconyseats.vertx.helper.application.configurer.metrics;
+package com.github.balconyseats.vertx.helper.application.configurer.options;
 
 import com.github.balconyseats.vertx.helper.application.configurer.VertxOptionsConfigurer;
 import com.github.balconyseats.vertx.helper.application.tracing.TracingConfigHelper;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 
+/**
+ * Configures {@link io.vertx.core.tracing.TracingOptions} from configuration
+ */
 public class ConfigurationTracingOptionsConfigurer implements VertxOptionsConfigurer {
 
     @Override
