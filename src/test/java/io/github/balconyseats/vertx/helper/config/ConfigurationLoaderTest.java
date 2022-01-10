@@ -59,6 +59,28 @@ class ConfigurationLoaderTest {
     }
 
     @Test
+    public void shouldGetEmptyConfiguration_whenClasspathConfigurationIsDisabledWithSystemPropertyAndOtherConfigurationsNotExists() throws Throwable {
+        System.setProperty("vertx.configuration.classpath.disabled", "true");
+        var testContext = new VertxTestContext();
+        ConfigurationLoader.builder()
+            .build()
+            .load()
+            .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
+                    Assertions.assertThat(c.encode()).isEqualTo("{}");
+                    testContext.completeNow();
+                })
+            ));
+
+        Assertions.assertThat(testContext.awaitCompletion(5, TimeUnit.SECONDS)).isTrue();
+
+        System.clearProperty("vertx.configuration.classpath.disabled");
+
+        if (testContext.failed()) {
+            throw testContext.causeOfFailure();
+        }
+    }
+
+    @Test
     public void shouldLoadDefaultVertxConfiguration() throws Throwable {
 
         createFile("conf/config.json", "{\n" +
@@ -81,6 +103,8 @@ class ConfigurationLoaderTest {
                 ));
 
         Assertions.assertThat(testContext.awaitCompletion(5, TimeUnit.SECONDS)).isTrue();
+
+
 
         deleteFile("conf");
         if (testContext.failed()) {
@@ -122,7 +146,7 @@ class ConfigurationLoaderTest {
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
-                            Assertions.assertThat(c.encode()).contains("{\"sys\":{\"a\":2,\"b\":\"b\",\"c\":10,\"d\":{\"a\":\"sysprops\"},\"z\":2}}");
+                            Assertions.assertThat(c.encode()).contains("\"sys\":{\"a\":2,\"b\":\"b\",\"c\":10,\"d\":{\"a\":\"sysprops\"},\"z\":2}");
                             testContext.completeNow();
                         })
                 ));
@@ -158,7 +182,7 @@ class ConfigurationLoaderTest {
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
-                            Assertions.assertThat(c.encode()).contains("{\"sys\":{\"a\":1,\"b\":\"b\"}}");
+                            Assertions.assertThat(c.encode()).contains("\"sys\":{\"a\":1,\"b\":\"b\"}");
                             testContext.completeNow();
                         })
                 ));
@@ -189,7 +213,7 @@ class ConfigurationLoaderTest {
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
-                            Assertions.assertThat(c.encode()).contains("{\"sys\":{\"a\":1,\"b\":\"b\"}}");
+                            Assertions.assertThat(c.encode()).contains("\"sys\":{\"a\":1,\"b\":\"b\"}");
                             testContext.completeNow();
                         })
                 ));
