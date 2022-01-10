@@ -34,6 +34,36 @@ class VertxApplicationTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VertxApplicationTest.class);
 
+
+    @Test
+    public void testConstructor_whenAllArgsIsNull_expectDefaults() {
+
+        VertxApplication vertxApplication = new VertxApplication(null, null, null, null, null, null);
+
+        Assertions.assertThat(vertxApplication).isNotNull();
+        Assertions.assertThat(vertxApplication).extracting("configurationLoader").isNotNull();
+        Assertions.assertThat(vertxApplication).extracting("verticleConfigurers").isNotNull();
+        Assertions.assertThat(vertxApplication).extracting("vertxOptionsConfigurer").isNotNull();
+        Assertions.assertThat(vertxApplication).extracting("initializationContextConfigurer").isNotNull();
+        Assertions.assertThat(vertxApplication).extracting("preHandler").isNotNull();
+        Assertions.assertThat(vertxApplication).extracting("postHandler").isNotNull();
+
+    }
+
+    @Test
+    public void testCreate_whenDefaultBuilder_expectDefaults(VertxTestContext testContext) {
+
+        VertxApplication vertxApplication = VertxApplication.builder().build();
+
+        vertxApplication.create().onComplete(testContext.succeeding(vertxContext -> testContext.verify(() -> {
+            Assertions.assertThat(vertxContext.getVertx()).isNotNull();
+            Assertions.assertThat(vertxContext.getConfiguration()).isNotNull();
+            Assertions.assertThat(vertxContext.getInitializationContext()).isNotNull();
+            testContext.completeNow();
+
+        })));
+    }
+
     @Test
     public void testCreate_shouldConfigureAll(VertxTestContext testContext) {
 

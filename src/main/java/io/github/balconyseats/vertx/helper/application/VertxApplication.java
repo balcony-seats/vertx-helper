@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -59,15 +60,16 @@ public class VertxApplication {
                             List<VerticleConfigurer> verticleConfigurers,
                             VertxOptionsConfigurer vertxOptionsConfigurer,
                             InitializationContextConfigurer initializationContextConfigurer,
-                            InitializationHandler beforeHandler,
-                            InitializationHandler afterHandler
+                            InitializationHandler preHandler,
+                            InitializationHandler postHandler
     ) {
-        this.configurationLoader = configurationLoader;
-        this.verticleConfigurers = verticleConfigurers;
-        this.vertxOptionsConfigurer = vertxOptionsConfigurer;
-        this.initializationContextConfigurer = initializationContextConfigurer;
-        this.preHandler = beforeHandler;
-        this.postHandler = afterHandler;
+
+        this.configurationLoader = Objects.requireNonNullElseGet(configurationLoader, () -> ConfigurationLoader.builder().build());
+        this.verticleConfigurers = Objects.requireNonNullElseGet(verticleConfigurers, () -> List.of());
+        this.vertxOptionsConfigurer = Objects.requireNonNullElseGet(vertxOptionsConfigurer, () -> VertxOptionsConfigurer.composite());
+        this.initializationContextConfigurer = Objects.requireNonNullElseGet(initializationContextConfigurer, () -> InitializationContextConfigurer.composite());
+        this.preHandler = Objects.requireNonNullElseGet(preHandler, () -> InitializationHandler.composite());
+        this.postHandler = Objects.requireNonNullElseGet(postHandler, () -> InitializationHandler.composite());
     }
 
     /**
