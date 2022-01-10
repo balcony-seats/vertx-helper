@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Configuration loader builder.
@@ -54,7 +55,7 @@ public class ConfigurationLoaderBuilder {
         ConfigRetrieverOptions retrieverOptions = new ConfigRetrieverOptions();
 
         // 1. class path config if enabled
-        if (features.get(FeatureType.CLASSPATH_CONFIG)) {
+        if (classPathConfigurationEnabled()) {
             addFileConfigStores(retrieverOptions, ConfigurationConstants.VERTX_APP_CLASSPATH_CONFIG);
         }
         // 2. default vertx stores if enabled
@@ -69,6 +70,15 @@ public class ConfigurationLoaderBuilder {
         stores.forEach(retrieverOptions::addStore);
 
         return new ConfigurationLoader(retrieverOptions);
+    }
+
+    private boolean classPathConfigurationEnabled() {
+        String systemProperty = System.getProperty(ConfigurationConstants.VERTX_APP_CONFIGURATION_CLASSPATH_DISABLED_SYSTEM_PROPERTY, "false");
+        String envVariable = Objects.requireNonNullElse(System.getenv(ConfigurationConstants.VERTX_APP_CONFIGURATION_CLASSPATH_DISABLED_ENV_VARIABLE), "false");
+
+        return !"true".equals(systemProperty)
+            && !"true".equals(envVariable)
+            && features.get(FeatureType.CLASSPATH_CONFIG);
     }
 
     private void addFileConfigStores(final ConfigRetrieverOptions retrieverOptions, final String locations) {
