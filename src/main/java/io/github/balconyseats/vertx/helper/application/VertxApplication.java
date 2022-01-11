@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 /**
  * Common Vert.X application creator.
  *
- * <p></p>
+ * <p>
  * Initialization flow:
  * <pre>
  *     load configuration

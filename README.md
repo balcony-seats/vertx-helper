@@ -177,3 +177,70 @@ Configure and instantiate `Verticle` instances and deploy them to VertX instance
 ### Verticle Post-deployment Handler
 
 This step adds possibility to do something after verticles are deployed.
+
+
+## Components
+
+### Sql pool from configuration
+
+Initialize `io.vertx.sqlclient.Pool` from configuration. 
+
+Supported implementations:
+ * postgresql (https://vertx.io/docs/vertx-pg-client/java/)
+ * jdbc (https://vertx.io/docs/vertx-jdbc-client/java/)
+
+For creating use `io.github.balconyseats.vertx.helper.database.sql.ConfigSqlPoolHelper`
+
+```java
+var pool = io.github.balconyseats.vertx.helper.sql.ConfigSqlPoolHelper(vertx, config);
+```
+
+To create pool and add it to `InitializationContext` use `io.github.balconyseats.vertx.helper.database.sql.ConfigSqlPoolInitializationContextHandler`  
+`instance()` method which will create pool and add it to context with `sqlpool` key   
+or `instance("some_key")` method which will create pool and add it to context with `some_key` key.
+
+
+```java
+VertxApplication vertxApplication = VertxApplication.builder()
+    .initializationContextConfigurer(
+        InitializationContextConfigurer.composite(
+            ConfigSqlPoolInitializationContextHandler.instance()
+        )
+    )
+    ...
+```
+
+
+Configuration example in yaml:
+
+**Postgresql**
+
+```yaml
+database:
+    type: 'postgresql'
+    host: 'host'
+    port: 5432
+    database: 'db'
+    user: 'username'
+    password: 'password'
+    pool:
+      max-size: 5
+      max-wait-queue-size: -1
+      connection-timeout: 30
+```
+
+
+**JDBC**
+
+```yaml
+database:
+    type: 'postgresql'
+    jdbc-url: 'jdbc:postgresql://localhost:5432/db'
+    user: 'username'
+    password: 'password'
+    pool:
+      max-size: 5
+      max-wait-queue-size: -1
+      connection-timeout: 30
+```
+
