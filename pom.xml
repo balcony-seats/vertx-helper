@@ -66,6 +66,8 @@
         <assertj-core.version>3.21.0</assertj-core.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
         <commons-io.version>2.11.0</commons-io.version>
+        <flyway-core.version>8.4.0</flyway-core.version>
+        <commons-text.version>1.9</commons-text.version>
     </properties>
 
     <dependencyManagement>
@@ -152,9 +154,21 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons-text.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway-core.version}</version>
         </dependency>
 
         <dependency>
