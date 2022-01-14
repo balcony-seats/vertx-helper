@@ -34,7 +34,8 @@ public class TracingConfigHelper {
 
     public static final String TRACE_ID_KEY = "traceId";
     public static final String SPAN_ID_KEY = "spanId";
-    public static final String[] TRACE_KEYS = new String[] {TRACE_ID_KEY, SPAN_ID_KEY};
+    public static final String PARENT_ID_KEY = "parentId";
+    public static final String[] TRACE_KEYS = new String[] {TRACE_ID_KEY, SPAN_ID_KEY, PARENT_ID_KEY};
 
     public static final String CONFIG_TRACING_ZIPKIN_ENABLED = "/tracing/zipkin/enabled";
     public static final String CONFIG_TRACING_ZIPKIN_ENDPOINT = "/tracing/zipkin/endpoint";
@@ -100,15 +101,16 @@ public class TracingConfigHelper {
         if (isZipkinEnabled(config)) {
             Optional.ofNullable(ZipkinTracer.activeContext())
                 .ifPresent(tc -> {
-                    setTraceId(tc.traceIdString());
-                    setSpanId(tc.spanIdString());
+                    setIfNotNull(TRACE_ID_KEY, tc.traceIdString());
+                    setIfNotNull(SPAN_ID_KEY, tc.spanIdString());
+                    setIfNotNull(PARENT_ID_KEY, tc.parentIdString());
                 });
         } else if (isOpenTracindEnabled(config)) {
             Optional.ofNullable(OpenTracingUtil.getSpan())
                 .map(Span::context)
                 .ifPresent(c -> {
-                    setTraceId(c.toTraceId());
-                    setSpanId(c.toSpanId());
+                    setIfNotNull(TRACE_ID_KEY, c.toTraceId());
+                    setIfNotNull(SPAN_ID_KEY, c.toSpanId());
                 });
         }
     }
@@ -121,15 +123,9 @@ public class TracingConfigHelper {
         return ConfigUtil.getBoolean(CONFIG_TRACING_ZIPKIN_ENABLED, config);
     }
 
-    private static void setTraceId(String traceId) {
-        if (traceId != null) {
-            ContextualData.put(TRACE_ID_KEY, traceId);
-        }
-    }
-
-    private static void setSpanId(String spanId) {
-        if (spanId != null) {
-            ContextualData.put(SPAN_ID_KEY, spanId);
+    private static void setIfNotNull(String key, String value) {
+        if (value != null) {
+            ContextualData.put(key, value);
         }
     }
 
