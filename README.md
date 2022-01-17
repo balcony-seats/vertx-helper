@@ -234,7 +234,7 @@ database:
 
 ```yaml
 database:
-    type: 'postgresql'
+    type: 'jdbc'
     jdbc-url: 'jdbc:postgresql://localhost:5432/db'
     user: 'username'
     password: 'password'
@@ -244,3 +244,45 @@ database:
       connection-timeout: 30
 ```
 
+
+### Database migration
+
+Initialize and migrate database using provided and configured `io.github.balconyseats.vertx.helper.database.migration.DatabaseMigration`.  
+Flyway database migration is currently implemented with `io.github.balconyseats.vertx.helper.database.migration.ConfigFlywayDatabaseMigration`.
+
+To use database migration create `io.github.balconyseats.vertx.helper.database.migration.ConfigDatabaseMigrationInitializationHandler`  
+and add it to `VertxApplication` as pre or post handler.
+
+```java
+
+VertxApplication vertxApplication = VertxApplication.builder()
+    ...
+    .preHandler(InitializationHandler.composite(
+            ConfigDatabaseMigrationInitializationHandler.instance()
+        )
+    ) // add here 
+    ...
+    .postHandler(InitializationHandler.composite(
+            ConfigDatabaseMigrationInitializationHandler.instance()
+        )
+    ) // or here
+    .build();
+
+```
+
+It uses user, password, host, etc. properties from database configuration properties:
+
+```yaml
+database:
+  type: 'postgresql'
+  host: 'host'
+  port: 5432
+  database: 'db'
+  user: 'username'
+  password: 'password'
+  migration:
+    enabled: true
+    type: flyway
+    jdbcUrl: 'jdbc:postgresql://${host}:${port}/${database}'
+
+```
