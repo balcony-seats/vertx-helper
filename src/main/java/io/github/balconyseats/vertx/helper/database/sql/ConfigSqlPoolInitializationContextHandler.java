@@ -1,9 +1,8 @@
 package io.github.balconyseats.vertx.helper.database.sql;
 
 import io.github.balconyseats.vertx.helper.application.InitializationContext;
-import io.github.balconyseats.vertx.helper.application.configurer.InitializationHandler;
+import io.github.balconyseats.vertx.helper.application.configurer.InitializationContextConfigurer;
 import io.vertx.core.Future;
-import io.vertx.core.Promise;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
@@ -11,7 +10,7 @@ import io.vertx.core.json.JsonObject;
  * Creates {@link io.vertx.sqlclient.Pool} from configuration and
  * adds it to initialization context under "sqlpool" key.
  */
-public class ConfigSqlPoolInitializationContextHandler implements InitializationHandler {
+public class ConfigSqlPoolInitializationContextHandler implements InitializationContextConfigurer {
 
     public static final String SQLPOOL_KEY = "sqlpool";
 
@@ -26,13 +25,11 @@ public class ConfigSqlPoolInitializationContextHandler implements Initialization
     }
 
     @Override
-    public Future<Void> handle(Vertx vertx, InitializationContext initializationContext, JsonObject config) {
-        Promise<Void> promise = Promise.promise();
-
-        initializationContext.add(this.key, ConfigSqlPoolHelper.create(vertx, config));
-
-        promise.complete();
-        return promise.future();
+    public Future<InitializationContext> configure(InitializationContext initializationContext, Vertx vertx, JsonObject config) {
+        return Future.future(p -> {
+            initializationContext.add(this.key, ConfigSqlPoolHelper.create(vertx, config));
+            p.complete(initializationContext);
+        });
     }
 
     public static ConfigSqlPoolInitializationContextHandler instance() {

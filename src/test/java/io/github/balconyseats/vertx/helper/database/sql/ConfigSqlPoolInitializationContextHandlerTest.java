@@ -28,7 +28,7 @@ class ConfigSqlPoolInitializationContextHandlerTest {
 
 
         InitializationContext initializationContext = new InitializationContext();
-        ConfigSqlPoolInitializationContextHandler.instance().handle(vertx, initializationContext, config)
+        ConfigSqlPoolInitializationContextHandler.instance().configure(initializationContext, vertx, config)
             .onComplete(testContext.succeeding(__ -> testContext.verify(() -> {
                 Assertions.assertThat(initializationContext.<Pool>get("sqlpool")).isEqualTo(pool);
                 poolHelperMockedStatic.verify(() -> ConfigSqlPoolHelper.create(vertx, config));
@@ -49,7 +49,7 @@ class ConfigSqlPoolInitializationContextHandlerTest {
 
 
         InitializationContext initializationContext = new InitializationContext();
-        ConfigSqlPoolInitializationContextHandler.instance("dbpool").handle(vertx, initializationContext, config)
+        ConfigSqlPoolInitializationContextHandler.instance("dbpool").configure(initializationContext, vertx, config)
             .onComplete(testContext.succeeding(__ -> testContext.verify(() -> {
                 Assertions.assertThat(initializationContext.<Pool>get("dbpool")).isEqualTo(pool);
                 poolHelperMockedStatic.verify(() -> ConfigSqlPoolHelper.create(vertx, config));
