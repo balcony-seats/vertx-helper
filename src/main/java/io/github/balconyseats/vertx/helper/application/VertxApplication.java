@@ -187,7 +187,7 @@ public class VertxApplication {
         Promise<List<Triple<String, String, Boolean>>> promise = Promise.promise();
 
         Map<String, Future<String>> deployments = verticleConfigurers.stream()
-            .map(c -> c.create(initializationContext, config))
+            .map(c -> c.create(vertx, initializationContext, config))
             .collect(Collectors.toMap(ClassUtils::getSimpleName, vertx::deployVerticle));
 
         CompositeFuture.join(List.copyOf(deployments.values()))
