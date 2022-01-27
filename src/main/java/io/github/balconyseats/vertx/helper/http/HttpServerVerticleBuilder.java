@@ -4,6 +4,7 @@ import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class HttpServerVerticleBuilder {
     private JsonObject config;
+    private BodyHandler bodyHandler;
     private List<RouterConfigurer> subrouterConfigurers;
     private List<RouterHandler> routerHandlers;
     private List<Handler<Router>> simpleRouterHandlers;
@@ -53,6 +55,6 @@ public class HttpServerVerticleBuilder {
     }
 
     public HttpServerVerticle build() {
-        return new HttpServerVerticle(config, subrouterConfigurers, routerHandlers, simpleRouterHandlers, httpServerOptionsConfigurer);
+        return new HttpServerVerticle(config, bodyHandler, subrouterConfigurers, routerHandlers, simpleRouterHandlers, httpServerOptionsConfigurer);
     }
 }

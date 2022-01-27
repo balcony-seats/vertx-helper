@@ -9,6 +9,7 @@ import io.vertx.core.Promise;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,17 +36,20 @@ public class HttpServerVerticle extends AbstractVerticle {
     private static final Integer DEFAULT_PORT = 8080;
 
     private final JsonObject config;
+    private final BodyHandler bodyHandler;
     private final List<RouterConfigurer> subrouterConfigurers;
     private final List<RouterHandler> routerHandlers;
     private final List<Handler<Router>> simpleRouterHandlers;
     private final Configurer<HttpServerOptions> httpServerOptionsConfigurer;
 
     public HttpServerVerticle(JsonObject config,
+                              BodyHandler bodyHandler,
                               List<RouterConfigurer> subrouterConfigurers,
                               List<RouterHandler> routerHandlers,
                               List<Handler<Router>> simpleRouterHandlers,
                               Configurer<HttpServerOptions> httpServerOptionsConfigurer) {
         this.config = config;
+        this.bodyHandler = Objects.requireNonNullElseGet(bodyHandler, () -> BodyHandler.create());
         this.subrouterConfigurers = subrouterConfigurers;
         this.routerHandlers = routerHandlers;
         this.simpleRouterHandlers = simpleRouterHandlers;
@@ -106,6 +110,9 @@ public class HttpServerVerticle extends AbstractVerticle {
     private Future<Router> commonRouter(List<Pair<String, Router>> routers) {
         Promise<Router> promise = Promise.promise();
         Router router = Router.router(vertx);
+
+        //add bodyHandler
+        router.route().handler(this.bodyHandler);
 
         //add custom route customizers
         if (this.routerHandlers != null) {
