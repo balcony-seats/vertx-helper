@@ -21,4 +21,8 @@ public class EventBusContextualDataHandler implements InitializationHandler {
         }
         return promise.future();
     }
+
+    public static InitializationHandler instance() {
+        return new EventBusContextualDataHandler();
+    }
 }
