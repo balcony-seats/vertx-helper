@@ -67,12 +67,12 @@ class VertxApplicationTest {
     @Test
     public void testCreate_shouldConfigureAll(VertxTestContext testContext) {
 
-        VerticleConfigurer httpServerVerticleConfigurer = (ctx, config) ->
+        VerticleConfigurer httpServerVerticleConfigurer = (vertx, ctx, config) ->
             HttpServerVerticle.builder()
                 .config(config)
                 .routerHandlers(List.of(
                         new ContextualLoggingRouterHandler(),
-                        (vertx, router, conf) -> {
+                        (v, router, conf) -> {
                             if (LOGGER.isDebugEnabled()) {
                                 router.route().handler(rc -> {
                                     LOGGER.debug("Received request: {} {}, headers: {}, body: '{}'",
@@ -85,7 +85,7 @@ class VertxApplicationTest {
                         },
                         new ConfigHealthCheckHandler(),
                         new ConfigMetricsHandler(),
-                        (vertx, router, conf) -> router.get("/ping").handler(rc -> rc.response().setStatusCode(200).end("pong"))
+                        (v, router, conf) -> router.get("/ping").handler(rc -> rc.response().setStatusCode(200).end("pong"))
                     )
                 )
                 .build();
