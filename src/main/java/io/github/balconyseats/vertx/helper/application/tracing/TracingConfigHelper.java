@@ -1,6 +1,6 @@
 package io.github.balconyseats.vertx.helper.application.tracing;
 
-import io.github.balconyseats.vertx.helper.util.ConfigUtil;
+import io.github.balconyseats.vertx.helper.util.JsonObjectHelper;
 import io.opentracing.Span;
 import io.reactiverse.contextual.logging.ContextualData;
 import io.vertx.core.Vertx;
@@ -50,11 +50,11 @@ public class TracingConfigHelper {
     public static TracingOptions createTracingOptions(JsonObject config) {
         if (isZipkinEnabled(config)) {
             final HttpSenderOptions httpSenderOptions = new HttpSenderOptions()
-                .setSenderEndpoint( ConfigUtil.getString(CONFIG_TRACING_ZIPKIN_ENDPOINT, config));
+                .setSenderEndpoint( JsonObjectHelper.getString(CONFIG_TRACING_ZIPKIN_ENDPOINT, config));
             httpSenderOptions.setTracingPolicy(TracingPolicy.ALWAYS);
 
             return new ZipkinTracingOptions()
-                .setServiceName(ConfigUtil.getString(CONFIG_TRACING_ZIPKIN_SERVICE_NAME, config))
+                .setServiceName(JsonObjectHelper.getString(CONFIG_TRACING_ZIPKIN_SERVICE_NAME, config))
                 .setSenderOptions(httpSenderOptions);
         } else if (isOpenTracindEnabled(config)) {
             return new OpenTracingOptions();
@@ -116,11 +116,11 @@ public class TracingConfigHelper {
     }
 
     private static Boolean isOpenTracindEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(CONFIG_TRACING_OPENTRACING_ENABLED, config);
+        return JsonObjectHelper.getBoolean(CONFIG_TRACING_OPENTRACING_ENABLED, config);
     }
 
     private static Boolean isZipkinEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(CONFIG_TRACING_ZIPKIN_ENABLED, config);
+        return JsonObjectHelper.getBoolean(CONFIG_TRACING_ZIPKIN_ENABLED, config);
     }
 
     private static void setIfNotNull(String key, String value) {

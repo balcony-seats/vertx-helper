@@ -227,7 +227,7 @@ public class ConfigJWTAuthProvider implements JWTAuth {
     private User createUser(String token, JsonObject jwt) {
         JsonObject principal = jwt.copy()
             .put("access_token", token);
-        User user = User.create(principal, jwt);
+        User user = User.create(principal, new JsonObject().put("accessToken", jwt).mergeIn(jwt));
         return user;
     }
 

@@ -1,6 +1,6 @@
 package io.github.balconyseats.vertx.helper.application.metrics;
 
-import io.github.balconyseats.vertx.helper.util.ConfigUtil;
+import io.github.balconyseats.vertx.helper.util.JsonObjectHelper;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.metrics.MetricsOptions;
@@ -36,7 +36,7 @@ public class MetricsConfigHelper {
      */
     public static void addMetricsHandler(Vertx vertx, Router router, JsonObject config) {
         if (metricsEnabled(config) && prometheusEnabled(config)) {
-            String path = ConfigUtil.getString(CONFIG_METRICS_MICROMETER_PROMETHEUS_PATH, config, DEFAULT_METRICS_PATH);
+            String path = JsonObjectHelper.getString(CONFIG_METRICS_MICROMETER_PROMETHEUS_PATH, config, DEFAULT_METRICS_PATH);
             router.get(path).handler(PrometheusScrapingHandler.create());
         }
     }
@@ -63,10 +63,10 @@ public class MetricsConfigHelper {
     }
 
     private static boolean metricsEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(CONFIG_METRICS_MICROMETER_ENABLED, config);
+        return JsonObjectHelper.getBoolean(CONFIG_METRICS_MICROMETER_ENABLED, config);
     }
 
     private static boolean prometheusEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean(CONFIG_METRICS_MICROMETER_PROMETHEUS_ENABLED, config);
+        return JsonObjectHelper.getBoolean(CONFIG_METRICS_MICROMETER_PROMETHEUS_ENABLED, config);
     }
 }
