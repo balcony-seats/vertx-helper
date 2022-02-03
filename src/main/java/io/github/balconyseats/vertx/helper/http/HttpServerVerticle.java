@@ -1,6 +1,6 @@
 package io.github.balconyseats.vertx.helper.http;
 
-import io.github.balconyseats.vertx.helper.util.ConfigUtil;
+import io.github.balconyseats.vertx.helper.util.JsonObjectHelper;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.CompositeFuture;
 import io.vertx.core.Future;
@@ -67,7 +67,7 @@ public class HttpServerVerticle extends AbstractVerticle {
             .onSuccess(router ->
                 this.vertx.createHttpServer(this.httpServerOptionsConfigurer.configure(this.config))
                     .requestHandler(router)
-                    .listen(ConfigUtil.getInteger(CONFIG_HTTP_SERVER_PORT, config, DEFAULT_PORT))
+                    .listen(JsonObjectHelper.getInteger(CONFIG_HTTP_SERVER_PORT, config, DEFAULT_PORT))
                     .onSuccess(server -> {
                         LOGGER.info("Http server started on port {}", server.actualPort());
                         startPromise.complete();

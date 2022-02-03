@@ -1,7 +1,7 @@
 package io.github.balconyseats.vertx.helper.http.handlers;
 
 import io.github.balconyseats.vertx.helper.http.RouterHandler;
-import io.github.balconyseats.vertx.helper.util.ConfigUtil;
+import io.github.balconyseats.vertx.helper.util.JsonObjectHelper;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
@@ -27,8 +27,8 @@ public class ConfigHealthCheckHandler implements RouterHandler {
 
     @Override
     public void apply(Vertx vertx, Router route, JsonObject config) {
-        if (ConfigUtil.getBoolean(CONFIG_HTTP_HEALTH_ENABLED, config)) {
-            DefaultHealthCheckHandler.forPath(ConfigUtil.getString(CONFIG_HTTP_HEALTH_PATH, config, DEFAULT_HEALTH_PATH))
+        if (JsonObjectHelper.getBoolean(CONFIG_HTTP_HEALTH_ENABLED, config)) {
+            DefaultHealthCheckHandler.forPath(JsonObjectHelper.getString(CONFIG_HTTP_HEALTH_PATH, config, DEFAULT_HEALTH_PATH))
                 .apply(vertx, route, config);
         }
     }

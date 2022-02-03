@@ -1,7 +1,7 @@
 package io.github.balconyseats.vertx.helper.kafka;
 
 import io.github.balconyseats.vertx.helper.exception.IllegalConfigurationException;
-import io.github.balconyseats.vertx.helper.util.ConfigUtil;
+import io.github.balconyseats.vertx.helper.util.JsonObjectHelper;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.kafka.client.consumer.KafkaConsumer;
@@ -59,7 +59,7 @@ public class KafkaHelper {
      * @return true if is enabled or false if not
      */
     public static boolean isKafkaEnabled(JsonObject config) {
-        return ConfigUtil.getBoolean("/kafka/enabled", config);
+        return JsonObjectHelper.getBoolean("/kafka/enabled", config);
     }
 
     /**
@@ -144,7 +144,7 @@ public class KafkaHelper {
      */
     public static String consumerTopic(String consumerName, JsonObject config) {
         String topicPath = String.format("/kafka/consumers/%s/topic", consumerName);
-        return Optional.ofNullable(ConfigUtil.getString(topicPath, config))
+        return Optional.ofNullable(JsonObjectHelper.getString(topicPath, config))
             .orElseThrow(() -> new IllegalConfigurationException(String.format("Kafka configuration for topic '%s' does not exist.", topicPath)));
     }
 
@@ -156,7 +156,7 @@ public class KafkaHelper {
      */
     public static String producerTopic(String producerName, JsonObject config) {
         String topicPath = String.format("/kafka/producers/%s/topic", producerName);
-        return Optional.ofNullable(ConfigUtil.getString(topicPath, config))
+        return Optional.ofNullable(JsonObjectHelper.getString(topicPath, config))
             .orElseThrow(() -> new IllegalConfigurationException(String.format("Kafka configuration for topic '%s' does not exist.", topicPath)));
     }
 
