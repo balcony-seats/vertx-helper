@@ -4,6 +4,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.JDBCConnectOptions;
 import io.vertx.jdbcclient.JDBCPool;
+import io.vertx.mssqlclient.MSSQLConnectOptions;
+import io.vertx.mssqlclient.MSSQLPool;
 import io.vertx.oracleclient.OracleConnectOptions;
 import io.vertx.oracleclient.OraclePool;
 import io.vertx.pgclient.PgConnectOptions;
@@ -13,8 +15,6 @@ import io.vertx.sqlclient.PoolOptions;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Configures {@link Pool} from configuration object.
@@ -33,7 +33,7 @@ import java.util.function.Function;
  *
  *
  * <p>
- *
+ * <p>
  * For jdbc ({@link JDBCConnectOptions}:
  * <pre>
  *     database:
@@ -45,7 +45,7 @@ import java.util.function.Function;
  * </pre>
  *
  * <p>
- *
+ * <p>
  * Pool options ({@link PoolOptions})
  *
  * <pre>
@@ -55,24 +55,18 @@ import java.util.function.Function;
  *         max-wait-queue-size: -1
  *         connection-timeout: 30
  * </pre>
- *
- *
  */
 public class ConfigSqlPoolHelper {
 
     public static final String POSTGRESQL_TYPE = "postgresql";
     public static final String ORACLE_TYPE = "oracle";
+    public static final String MSSQL_TYPE = "mssql";
     public static final String JDBC_TYPE = "jdbc";
-
-    @FunctionalInterface
-    interface PoolFunction {
-        Pool apply(Vertx vertx, PoolOptions poolOptions, JsonObject dbConfig);
-    }
-
     public static Map<String, PoolFunction> POOL_FUNCTIONS = Map.of(
-      POSTGRESQL_TYPE, ConfigSqlPoolHelper::pgPool,
-      ORACLE_TYPE, ConfigSqlPoolHelper::oraclePool,
-      JDBC_TYPE, ConfigSqlPoolHelper::jdbcPool
+        POSTGRESQL_TYPE, ConfigSqlPoolHelper::pgPool,
+        ORACLE_TYPE, ConfigSqlPoolHelper::oraclePool,
+        MSSQL_TYPE, ConfigSqlPoolHelper::mssqlPool,
+        JDBC_TYPE, ConfigSqlPoolHelper::jdbcPool
     );
 
     public static Pool create(Vertx vertx, JsonObject config) {
@@ -105,6 +99,16 @@ public class ConfigSqlPoolHelper {
     private static Pool oraclePool(Vertx vertx, PoolOptions poolOptions, final JsonObject dbConfig) {
         OracleConnectOptions connectOptions = new OracleConnectOptions(dbConfig);
         return OraclePool.pool(vertx, connectOptions, poolOptions);
+    }
+
+    private static Pool mssqlPool(Vertx vertx, PoolOptions poolOptions, final JsonObject dbConfig) {
+        MSSQLConnectOptions connectOptions = new MSSQLConnectOptions(dbConfig);
+        return MSSQLPool.pool(vertx, connectOptions, poolOptions);
+    }
+
+    @FunctionalInterface
+    interface PoolFunction {
+        Pool apply(Vertx vertx, PoolOptions poolOptions, JsonObject dbConfig);
     }
 
 }

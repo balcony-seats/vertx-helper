@@ -150,6 +150,12 @@
 
         <dependency>
             <groupId>io.vertx</groupId>
+            <artifactId>vertx-mssql-client</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>io.vertx</groupId>
             <artifactId>vertx-jdbc-client</artifactId>
             <optional>true</optional>
         </dependency>
