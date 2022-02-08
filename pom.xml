@@ -57,7 +57,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 
-        <vertx.version>4.2.3</vertx.version>
+        <vertx.version>4.2.4</vertx.version>
 
         <commons-lang3.version>3.9</commons-lang3.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
@@ -141,6 +141,13 @@
             <artifactId>vertx-pg-client</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-oracle-client</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-jdbc-client</artifactId>
