@@ -49,7 +49,7 @@ public class HttpServerVerticle extends AbstractVerticle {
                               List<Handler<Router>> simpleRouterHandlers,
                               Configurer<HttpServerOptions> httpServerOptionsConfigurer) {
         this.config = config;
-        this.bodyHandler = Objects.requireNonNullElseGet(bodyHandler, () -> BodyHandler.create());
+        this.bodyHandler = Objects.requireNonNullElseGet(bodyHandler, BodyHandler::create);
         this.subrouterConfigurers = subrouterConfigurers;
         this.routerHandlers = routerHandlers;
         this.simpleRouterHandlers = simpleRouterHandlers;

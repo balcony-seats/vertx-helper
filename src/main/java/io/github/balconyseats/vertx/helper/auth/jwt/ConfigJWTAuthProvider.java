@@ -82,6 +82,10 @@ public class ConfigJWTAuthProvider implements JWTAuth {
         }
     }
 
+    public static ConfigJWTAuthProvider instance(Vertx vertx, JsonObject clients) {
+        return new ConfigJWTAuthProvider(vertx, clients);
+    }
+
     /**
      * Authenticates user and calls result handler with {@link User} which has
      * <br>
@@ -90,7 +94,7 @@ public class ConfigJWTAuthProvider implements JWTAuth {
      *  <li>attributes - {@link JsonObject} with claims from received JWT.</li>
      * </ul>
      *
-     * @param credentials credentials with token
+     * @param credentials   credentials with token
      * @param resultHandler result handler for authentication result
      */
     @Override
@@ -116,17 +120,16 @@ public class ConfigJWTAuthProvider implements JWTAuth {
             }
             //validate jwt
             jwt(clientOption)
-                    .onSuccess(jwt -> {
-                        JsonObject jwtToken = jwt.decode(tokenCredentials.getToken());
-                        User user = createUser(tokenCredentials.getToken(), jwtToken);
-                        if (user.expired()) {
-                            resultHandler.handle(Future.failedFuture("Invalid JWT token: token expired."));
-                            return;
-                        }
-                        resultHandler.handle(Future.succeededFuture(user));
+                .onSuccess(jwt -> {
+                    JsonObject jwtToken = jwt.decode(tokenCredentials.getToken());
+                    User user = createUser(tokenCredentials.getToken(), jwtToken);
+                    if (user.expired()) {
+                        resultHandler.handle(Future.failedFuture("Invalid JWT token: token expired."));
                         return;
-                    })
-                    .onFailure(t -> resultHandler.handle(Future.failedFuture(t)));
+                    }
+                    resultHandler.handle(Future.succeededFuture(user));
+                })
+                .onFailure(t -> resultHandler.handle(Future.failedFuture(t)));
 
         } catch (Exception e) {
             resultHandler.handle(Future.failedFuture(e));
@@ -144,8 +147,8 @@ public class ConfigJWTAuthProvider implements JWTAuth {
         }
 
         return Future.succeededFuture(new JWT())
-                .compose(configureJWTWithJwks(issuer, jwksConfig))
-                .compose(configureJWTWithJwksUri(issuer, jwksUriConfig));
+            .compose(configureJWTWithJwks(issuer, jwksConfig))
+            .compose(configureJWTWithJwksUri(issuer, jwksUriConfig));
 
     }
 
@@ -153,15 +156,15 @@ public class ConfigJWTAuthProvider implements JWTAuth {
         return jwt -> {
             if (config != null) {
                 config.stream()
-                        .filter(JsonObject.class::isInstance)
-                        .map(JsonObject.class::cast)
-                        .forEach(jwk -> {
-                            PubSecKeyOptions pubSecKeyOptions = new PubSecKeyOptions()
-                                    .setId(jwk.getString("key-id"))
-                                    .setAlgorithm(jwk.getString("algorithm"))
-                                    .setBuffer(jwk.getString("public-key-pem"));
-                            jwt.addJWK(new JWK(pubSecKeyOptions));
-                        });
+                    .filter(JsonObject.class::isInstance)
+                    .map(JsonObject.class::cast)
+                    .forEach(jwk -> {
+                        PubSecKeyOptions pubSecKeyOptions = new PubSecKeyOptions()
+                            .setId(jwk.getString("key-id"))
+                            .setAlgorithm(jwk.getString("algorithm"))
+                            .setBuffer(jwk.getString("public-key-pem"));
+                        jwt.addJWK(new JWK(pubSecKeyOptions));
+                    });
             }
             return Future.succeededFuture(jwt);
         };
@@ -199,26 +202,26 @@ public class ConfigJWTAuthProvider implements JWTAuth {
                 }
 
                 return WebClient.create(vertx, webClientOptions)
-                        .get(uri.getPort(), uri.getHost(), uri.getPath())
-                        .send()
-                        .flatMap(resp -> {
-                            if (resp.statusCode() == HttpStatusCode.OK.code()) {
-                                JsonObject response = resp.bodyAsJsonObject();
-                                var keys = response.getJsonArray("keys");
+                    .get(uri.getPort(), uri.getHost(), uri.getPath())
+                    .send()
+                    .flatMap(resp -> {
+                        if (resp.statusCode() == HttpStatusCode.OK.code()) {
+                            JsonObject response = resp.bodyAsJsonObject();
+                            var keys = response.getJsonArray("keys");
 
-                                keys.stream()
-                                        .filter(JsonObject.class::isInstance)
-                                        .map(JsonObject.class::cast)
-                                        .forEach(jwk -> jwt.addJWK(new JWK(jwk)));
+                            keys.stream()
+                                .filter(JsonObject.class::isInstance)
+                                .map(JsonObject.class::cast)
+                                .forEach(jwk -> jwt.addJWK(new JWK(jwk)));
 
-                                return Future.succeededFuture(jwt);
-                            }
-                            LOGGER.error("Error retrieving jwks for issuer: {} from uri: {}, status: {}, response: {}",
-                                issuer, uri, resp.statusCode(), resp.bodyAsString());
-                            return Future.failedFuture(
-                                String.format("Error retrieving jwks for issuer: %s. Status: %s.",
-                                    issuer, resp.statusCode()));
-                        });
+                            return Future.succeededFuture(jwt);
+                        }
+                        LOGGER.error("Error retrieving jwks for issuer: {} from uri: {}, status: {}, response: {}",
+                            issuer, uri, resp.statusCode(), resp.bodyAsString());
+                        return Future.failedFuture(
+                            String.format("Error retrieving jwks for issuer: %s. Status: %s.",
+                                issuer, resp.statusCode()));
+                    });
             }
             return Future.succeededFuture(jwt);
         };
@@ -244,10 +247,6 @@ public class ConfigJWTAuthProvider implements JWTAuth {
     @Override
     public String generateToken(JsonObject claims) {
         return generateToken(claims, null);
-    }
-
-    public static ConfigJWTAuthProvider instance(Vertx vertx, JsonObject clients) {
-        return new ConfigJWTAuthProvider(vertx, clients);
     }
 
 }
