@@ -67,7 +67,7 @@ public enum HttpStatusCode {
     TIMEOUT_OCCURRED(524, "A timeout occurred")
     ;
 
-    private static Map<Integer, HttpStatusCode> CODE_TO_ENUM_MAP = null;
+    private static Map<Integer, HttpStatusCode> CODE_TO_ENUM_MAP;
     public static final int MAX_VALUE;
 
     static {
@@ -84,8 +84,8 @@ public enum HttpStatusCode {
         MAX_VALUE = maxValue;
     }
 
-    private int code;
-    private String desc;
+    private final int code;
+    private final String desc;
 
     HttpStatusCode(int code, String desc) {
         this.code = code;

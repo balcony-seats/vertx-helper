@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Configures and runs migrations on database from configured migration type of {@link DatabaseMigration}.
@@ -35,8 +35,7 @@ public class ConfigDatabaseMigrationInitializationHandler implements Initializat
     private final Map<String, DatabaseMigration> databaseMigrations;
 
     private ConfigDatabaseMigrationInitializationHandler(DatabaseMigration... databaseMigrations) {
-        this.databaseMigrations = Set.of(databaseMigrations)
-            .stream()
+        this.databaseMigrations = Stream.of(databaseMigrations)
             .collect(Collectors.toMap(DatabaseMigration::type, dm -> dm));
     }
 
