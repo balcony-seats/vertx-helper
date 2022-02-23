@@ -4,6 +4,7 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.JDBCPool;
 import io.vertx.junit5.VertxExtension;
+import io.vertx.mssqlclient.MSSQLPool;
 import io.vertx.oracleclient.OraclePool;
 import io.vertx.pgclient.PgPool;
 import io.vertx.sqlclient.Pool;
@@ -57,6 +58,29 @@ class ConfigSqlPoolHelperTest {
 
         Assertions.assertThat(pool).isNotNull()
             .isInstanceOf(OraclePool.class);
+
+    }
+
+    @Test
+    public void shouldCreateMssqlPool(Vertx vertx) {
+
+        JsonObject config = new JsonObject()
+            .put("database", new JsonObject()
+                .put("type", "mssql")
+                .put("host", "localhost")
+                .put("port", 1521)
+                .put("database", "database")
+                .put("user", "user")
+                .put("password", "password")
+                .put("pool", new JsonObject()
+                    .put("maxSize", 5)
+                )
+            );
+
+        Pool pool = ConfigSqlPoolHelper.create(vertx, config);
+
+        Assertions.assertThat(pool).isNotNull()
+            .isInstanceOf(MSSQLPool.class);
 
     }
 

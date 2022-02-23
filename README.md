@@ -188,6 +188,7 @@ Initialize `io.vertx.sqlclient.Pool` from configuration.
 Supported implementations:
  * postgresql (https://vertx.io/docs/vertx-pg-client/java/)
  * oracle (https://vertx.io/docs/vertx-oracle-client/java/)
+ * mssql (https://vertx.io/docs/vertx-mssql-client/java/)
  * jdbc (https://vertx.io/docs/vertx-jdbc-client/java/)
 
 
@@ -236,6 +237,22 @@ database:
 ```yaml
 database:
     type: 'oracle'
+    host: 'host'
+    port: 5432
+    database: 'db'
+    user: 'username'
+    password: 'password'
+    pool:
+      max-size: 5
+      max-wait-queue-size: -1
+      connection-timeout: 30
+```
+
+**MSSQL**
+
+```yaml
+database:
+    type: 'mssql'
     host: 'host'
     port: 5432
     database: 'db'
