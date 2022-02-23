@@ -1,5 +1,6 @@
 package io.github.balconyseats.vertx.helper.database.sql;
 
+import io.github.balconyseats.vertx.helper.exception.IllegalConfigurationException;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.JDBCConnectOptions;
@@ -62,6 +63,11 @@ public class ConfigSqlPoolHelper {
     public static final String ORACLE_TYPE = "oracle";
     public static final String MSSQL_TYPE = "mssql";
     public static final String JDBC_TYPE = "jdbc";
+
+    public static final String DEFAULT_DATABASE_CONFIG_ROOT = "database";
+    public static final String DATABASE_TYPE_KEY = "type";
+    public static final String DATABASE_POOL_KEY = "pool";
+
     public static Map<String, PoolFunction> POOL_FUNCTIONS = Map.of(
         POSTGRESQL_TYPE, ConfigSqlPoolHelper::pgPool,
         ORACLE_TYPE, ConfigSqlPoolHelper::oraclePool,
@@ -70,18 +76,27 @@ public class ConfigSqlPoolHelper {
     );
 
     public static Pool create(Vertx vertx, JsonObject config) {
-        JsonObject dbConfig = config.getJsonObject("database");
-        String type = dbConfig.getString("type");
+        return ConfigSqlPoolHelper.create(vertx, config, DEFAULT_DATABASE_CONFIG_ROOT);
+    }
+
+    public static Pool create(Vertx vertx, JsonObject config, String root) {
+        JsonObject dbConfig = config.getJsonObject(root);
+
+        if (dbConfig == null) {
+            throw new IllegalConfigurationException(String.format("Database configuration for root '%s' not exists.", root));
+        }
+
+        String type = dbConfig.getString(DATABASE_TYPE_KEY);
         PoolOptions poolOptions = poolOptions(dbConfig);
 
         return Optional.ofNullable(POOL_FUNCTIONS.get(type))
             .map(f -> f.apply(vertx, poolOptions, dbConfig))
-            .orElseThrow(() -> new IllegalArgumentException(String.format("Database type '%s' is not supported", type)));
+            .orElseThrow(() -> new IllegalArgumentException(String.format("Database type '%s' is not supported.", type)));
     }
 
     private static PoolOptions poolOptions(JsonObject dbConfig) {
         return Optional.of(dbConfig)
-            .map(o -> o.getJsonObject("pool"))
+            .map(o -> o.getJsonObject(DATABASE_POOL_KEY))
             .map(PoolOptions::new)
             .orElseGet(PoolOptions::new);
     }

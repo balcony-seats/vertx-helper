@@ -1,5 +1,6 @@
 package io.github.balconyseats.vertx.helper.database.sql;
 
+import io.github.balconyseats.vertx.helper.exception.IllegalConfigurationException;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.jdbcclient.JDBCPool;
@@ -102,6 +103,36 @@ class ConfigSqlPoolHelperTest {
         Assertions.assertThat(pool).isNotNull()
             .isInstanceOf(JDBCPool.class);
 
+    }
+
+    @Test
+    public void shouldCreatePoolByProvidingNonDefaultConfigRootName(Vertx vertx) {
+        JsonObject config = new JsonObject()
+            .put("foo-database", new JsonObject()
+                .put("type", "jdbc")
+                .put("jdbcUrl", "jdbc:postgresql://localhost:5432/omte")
+                .put("user", "user")
+                .put("password", "password")
+                .put("pool", new JsonObject()
+                    .put("maxSize", 5)
+                )
+            );
+
+        Pool pool = ConfigSqlPoolHelper.create(vertx, config, "foo-database");
+
+        Assertions.assertThat(pool).isNotNull()
+            .isInstanceOf(JDBCPool.class);
+
+    }
+
+    @Test
+    public void shouldThrowIllegalConfigurationException_whenDatabaseConfigurationNotExists(Vertx vertx) {
+
+        JsonObject config = new JsonObject();
+
+        Assertions.assertThatThrownBy(() -> ConfigSqlPoolHelper.create(vertx, config, "foo-database"))
+            .isInstanceOf(IllegalConfigurationException.class)
+            .hasMessage("Database configuration for root 'foo-database' not exists.");
 
     }
 
@@ -121,7 +152,7 @@ class ConfigSqlPoolHelperTest {
 
         Assertions.assertThatThrownBy(() -> ConfigSqlPoolHelper.create(vertx, config))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("Database type 'foo' is not supported");
+            .hasMessage("Database type 'foo' is not supported.");
 
     }
 }
