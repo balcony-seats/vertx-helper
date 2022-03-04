@@ -41,7 +41,6 @@ import java.util.stream.Collectors;
  *            V
  *  verticle post-deployment handler
  * </pre>
- *
  */
 public class VertxApplication {
 
@@ -70,6 +69,10 @@ public class VertxApplication {
         this.initializationContextConfigurer = Objects.requireNonNullElseGet(initializationContextConfigurer, () -> InitializationContextConfigurer.composite());
         this.preHandler = Objects.requireNonNullElseGet(preHandler, () -> InitializationHandler.composite());
         this.postHandler = Objects.requireNonNullElseGet(postHandler, () -> InitializationHandler.composite());
+    }
+
+    public static VertxApplicationBuilder builder() {
+        return new VertxApplicationBuilder();
     }
 
     /**
@@ -101,6 +104,7 @@ public class VertxApplication {
 
     /**
      * Closes Vertx instance.
+     *
      * @return {@link Future} with completed result
      */
     public Future<Void> close() {
@@ -114,15 +118,16 @@ public class VertxApplication {
 
     /**
      * Configures VertX, and configures and deploys verticles.
+     *
      * @param config configuration
      * @return {@link Future} with VertX instance
      */
     private Future<Pair<Vertx, InitializationContext>> configureAndDeploy(JsonObject config) {
         Promise<Pair<Vertx, InitializationContext>> promise = Promise.promise();
 
-        this.vertx = this.createVertx(config); // create vertx
+        this.vertx = this.createVertx(config);// create vertx
 
-        createInitializationContext(this.vertx, config) // create context
+        vertx.runOnContext((x) -> createInitializationContext(this.vertx, config) // create context
             .flatMap(ictx -> preHandler.handle(this.vertx, ictx, config).map(__ -> ictx)) // before deployment
             .flatMap(ictx ->
                 deployVerticles(this.vertx, ictx, config)
@@ -133,7 +138,8 @@ public class VertxApplication {
             )
             .flatMap(ictx -> postHandler.handle(this.vertx, ictx, config).map(__ -> ictx)) // after deployment
             .onSuccess(ictx -> promise.complete(Pair.of(this.vertx, ictx)))
-            .onFailure(promise::fail);
+            .onFailure(promise::fail)
+        );
 
         return promise.future();
     }
@@ -172,15 +178,15 @@ public class VertxApplication {
 
     /**
      * Creates and deploys verticles.
-     *
+     * <p>
      * Result is a {@link Future} of deployment results as {@link Triple}:
      * first element is verticle class name,
      * second element is deployment id,
      * and third element is deployment result flag.
      *
-     * @param vertx              Vertx instance
+     * @param vertx                 Vertx instance
      * @param initializationContext initializtion context object
-     * @param config             configuration
+     * @param config                configuration
      * @return {@link Future} with deployment result
      */
     protected Future<List<Triple<String, String, Boolean>>> deployVerticles(Vertx vertx, InitializationContext initializationContext, JsonObject config) {
@@ -217,10 +223,6 @@ public class VertxApplication {
             });
 
         return promise.future();
-    }
-
-    public static VertxApplicationBuilder builder() {
-        return new VertxApplicationBuilder();
     }
 
 }
