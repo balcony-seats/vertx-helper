@@ -42,7 +42,7 @@ class ConfigurationLoaderTest {
     public void shouldGetEmptyConfiguration_whenClasspathConfigurationIsDisabledAndOtherConfigurationsNotExists() throws Throwable {
         var testContext = new VertxTestContext();
         ConfigurationLoader.builder()
-                .disableFeature(ConfigurationLoaderBuilder.FeatureType.CLASSPATH_CONFIG)
+                .disableFeature(FeatureType.CLASSPATH_CONFIG)
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
@@ -92,8 +92,8 @@ class ConfigurationLoaderTest {
 
         var testContext = new VertxTestContext();
         ConfigurationLoader.builder()
-                .disableFeature(ConfigurationLoaderBuilder.FeatureType.CLASSPATH_CONFIG)
-                .enableFeature(ConfigurationLoaderBuilder.FeatureType.DEFAULT_VERTX_STORES)
+                .disableFeature(FeatureType.CLASSPATH_CONFIG)
+                .enableFeature(FeatureType.DEFAULT_VERTX_STORES)
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
@@ -142,7 +142,7 @@ class ConfigurationLoaderTest {
 
         var testContext = new VertxTestContext();
         ConfigurationLoader.builder()
-                .disableFeature(ConfigurationLoaderBuilder.FeatureType.CLASSPATH_CONFIG)
+                .disableFeature(FeatureType.CLASSPATH_CONFIG)
                 .build()
                 .load()
                 .onComplete(testContext.succeeding(c -> testContext.verify(() -> {
@@ -172,7 +172,7 @@ class ConfigurationLoaderTest {
 
         var testContext = new VertxTestContext();
         ConfigurationLoader.builder()
-                .disableFeature(ConfigurationLoaderBuilder.FeatureType.CLASSPATH_CONFIG)
+                .disableFeature(FeatureType.CLASSPATH_CONFIG)
                 .addStore(
                         new ConfigStoreOptions()
                                 .setType("file")
@@ -208,7 +208,7 @@ class ConfigurationLoaderTest {
 
         var testContext = new VertxTestContext();
         ConfigurationLoader.builder()
-                .disableFeature(ConfigurationLoaderBuilder.FeatureType.CLASSPATH_CONFIG)
+                .disableFeature(FeatureType.CLASSPATH_CONFIG)
                 .addConfigPath("conf/sysprops.json")
                 .build()
                 .load()
@@ -233,7 +233,7 @@ class ConfigurationLoaderTest {
 
         var testContext = new VertxTestContext();
         ConfigurationLoader.builder()
-                .disableFeature(ConfigurationLoaderBuilder.FeatureType.CLASSPATH_CONFIG)
+                .disableFeature(FeatureType.CLASSPATH_CONFIG)
                 .addStore(
                         new ConfigStoreOptions()
                                 .setType("file")

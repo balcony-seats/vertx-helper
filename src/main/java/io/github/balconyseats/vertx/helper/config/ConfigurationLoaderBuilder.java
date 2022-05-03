@@ -19,13 +19,14 @@ import java.util.Objects;
  */
 public class ConfigurationLoaderBuilder {
 
+    private static final String FILE_PREFIX = "file://";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ConfigurationLoaderBuilder.class);
 
     private static final Map<FeatureType, Boolean> DEFAULT_FEATURES = Map.of(
             FeatureType.DEFAULT_VERTX_STORES, Boolean.FALSE,
             FeatureType.CLASSPATH_CONFIG, Boolean.TRUE
     );
-    public static final String FILE_PREFIX = "file://";
 
     private final Map<FeatureType, Boolean> features = new HashMap<>(DEFAULT_FEATURES);
 
@@ -56,7 +57,10 @@ public class ConfigurationLoaderBuilder {
 
         // 1. class path config if enabled
         if (classPathConfigurationEnabled()) {
-            addFileConfigStores(retrieverOptions, ConfigurationConstants.VERTX_APP_CLASSPATH_CONFIG);
+            ConfigurationConstants.VERTX_APP_CLASSPATH_CONFIG.stream()
+                .filter(c -> this.getClass().getClassLoader().getResource(c) != null)
+                .map(this::createFileStoreOptions)
+                .forEach(fso -> retrieverOptions.addStore(fso));
         }
         // 2. default vertx stores if enabled
         if (features.get(FeatureType.DEFAULT_VERTX_STORES)) {
@@ -115,11 +119,6 @@ public class ConfigurationLoaderBuilder {
             return "properties";
         }
         return "json";
-    }
-
-    public enum FeatureType {
-        DEFAULT_VERTX_STORES,
-        CLASSPATH_CONFIG
     }
 
 }
